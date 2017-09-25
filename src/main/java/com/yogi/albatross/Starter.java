@@ -1,6 +1,6 @@
 package com.yogi.albatross;
 
-import com.yogi.albatross.decoder.MQTTDecoder;
+import com.yogi.albatross.decoder.MQTTHandleDecoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -26,7 +26,7 @@ public class Starter {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline=socketChannel.pipeline();
-                    pipeline.addLast(new MQTTDecoder());//mqtt decoder
+                    pipeline.addLast(new MQTTHandleDecoder());//mqtt decoder
                 }
             });
             ChannelFuture future = bootstrap.channel(NioServerSocketChannel.class).bind();
