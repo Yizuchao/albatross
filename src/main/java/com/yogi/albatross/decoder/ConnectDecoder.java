@@ -16,22 +16,27 @@ import io.netty.util.CharsetUtil;
 public class ConnectDecoder extends DecoderAdapter {
     @Override
     public BaseRequest process0(SimpleEncapPacket packet) throws Exception {
-        if(!protocolCheck(packet.getByteBuf())){
-            throw  new Exception("protocol or protocol level not support");
+        String protocolName=protocolName(packet.getByteBuf());
+        int protocolLevel=protocolLevel(packet.getByteBuf());
+        if(!Constants.PTOTOCOL_NAME.contains(protocolName) || Constants.PROTOCOL_LEVEL<protocolLevel){
+            throw  new Exception("protocol["+protocolName+"] or protocol level["+protocolLevel+"] not support");
         }
         ConnectRequest connectRequest=payload(packet,keepLive(packet,connectFlags(packet,null)));
         return connectRequest;
     }
 
-    private boolean protocolCheck(ByteBuf byteBuf){
+    private String protocolName(ByteBuf byteBuf){
         byteBuf.skipBytes(1);//discard MSB byte
         byte protocolLen=byteBuf.readByte();
         byte[] bytes=new byte[protocolLen];
         byteBuf.readBytes(bytes,0,protocolLen);
-        String protocolName=new String(bytes, CharsetUtil.UTF_8);
-        byte protocolLevel=byteBuf.readByte();
-        return Constants.PTOTOCOL_NAME.equals(protocolName) && protocolLevel<=Constants.PROTOCOL_LEVEL;
+        return new String(bytes, CharsetUtil.UTF_8);
     }
+
+    private int protocolLevel(ByteBuf byteBuf){
+        return byteBuf.readByte();
+    }
+
     private ConnectRequest connectFlags(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
         if(connectRequest==null){
             connectRequest=new ConnectRequest();
@@ -127,7 +132,7 @@ public class ConnectDecoder extends DecoderAdapter {
         }else {
             ConnectRequest cr=(ConnectRequest) request;
             boolean usernameOrPsw=false;
-            if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){
+            if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){//TODO
                 bs[3]= ConnAck.OK.getCode();
                 usernameOrPsw=true;
             }else {

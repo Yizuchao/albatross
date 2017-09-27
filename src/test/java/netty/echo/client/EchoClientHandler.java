@@ -9,6 +9,9 @@ import io.netty.util.CharsetUtil;
 public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf>{
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ByteBuf byteBuf=Unpooled.buffer();
+        byteBuf.writeByte(0x10);//connect fixed header
+
         ctx.writeAndFlush(Unpooled.copiedBuffer("哈哈哈", CharsetUtil.UTF_8));
     }
 

@@ -15,7 +15,7 @@ public abstract class DecoderAdapter implements IDecoder {
             return process0(packet);
         }finally {
             boolean release = packet.getByteBuf().release();
-            while (!release){
+            while (!release){//释放bytebuf
                 release=packet.getByteBuf().release();
             }
         }

@@ -1,6 +1,7 @@
 package com.yogi.albatross;
 
 import com.yogi.albatross.decoder.MQTTHandleDecoder;
+import com.yogi.albatross.handler.ServerIdleStateHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,13 +10,18 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Starter {
     private static final Logger logger= LoggerFactory.getLogger(Starter.class);
-    public static void main(String rags[]){
-
+    public static void main(String args[]){
+        int port=10090;
+        if(args!=null && args.length>=1){
+            port= NumberUtils.toInt(args[0],port);
+        }
+        run(port);
     }
     public static void run(int port){
         NioEventLoopGroup selectorGroup=new NioEventLoopGroup();
@@ -26,6 +32,7 @@ public class Starter {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline=socketChannel.pipeline();
+                    pipeline.addLast(new ServerIdleStateHandler());//idle
                     pipeline.addLast(new MQTTHandleDecoder());//mqtt decoder
                 }
             });
