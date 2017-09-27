@@ -39,9 +39,9 @@ public class MQTTHandleDecoder extends ByteToMessageDecoder {
                 return;
             }else {
                 SimpleEncapPacket simpleEncapPacket=new SimpleEncapPacket(ctx,frame,list);
-                simpleEncapPacket.setType(FixedHeadType.valueOf(headCode));
+                simpleEncapPacket.setHeadByte(headCode);
                 simpleEncapPacket.setLen(len);
-                IDecoder decoder=processors.get(simpleEncapPacket.getType());
+                IDecoder decoder=processors.get(FixedHeadType.valueOf(headCode));
                 BaseRequest request = decoder.process(simpleEncapPacket);
 
                 byte[] bytes=decoder.response(request, ConnAck.OK);//response 默认ack ok

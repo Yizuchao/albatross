@@ -9,7 +9,7 @@ import java.util.List;
 public class SimpleEncapPacket {
     private ChannelHandlerContext ctx;//context
     private List<Object> out;
-    private FixedHeadType type;//packet type
+    private byte headByte;//headByte
     private int len;//packet content length
     private ByteBuf byteBuf;//surplus byteBuf
 
@@ -19,12 +19,12 @@ public class SimpleEncapPacket {
         this.byteBuf = byteBuf;
     }
 
-    public FixedHeadType getType() {
-        return type;
+    public byte getHeadByte() {
+        return headByte;
     }
 
-    public void setType(FixedHeadType type) {
-        this.type = type;
+    public void setHeadByte(byte headByte) {
+        this.headByte = headByte;
     }
 
     public int getLen() {

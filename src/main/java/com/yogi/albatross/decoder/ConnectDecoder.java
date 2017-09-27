@@ -26,11 +26,12 @@ public class ConnectDecoder extends DecoderAdapter {
     }
 
     private String protocolName(ByteBuf byteBuf){
-        byteBuf.skipBytes(1);//discard MSB byte
+        return readUTF(byteBuf);
+      /*  byteBuf.skipBytes(1);//discard MSB byte
         byte protocolLen=byteBuf.readByte();
         byte[] bytes=new byte[protocolLen];
         byteBuf.readBytes(bytes,0,protocolLen);
-        return new String(bytes, CharsetUtil.UTF_8);
+        return new String(bytes, CharsetUtil.UTF_8);*/
     }
 
     private int protocolLevel(ByteBuf byteBuf){
@@ -114,11 +115,6 @@ public class ConnectDecoder extends DecoderAdapter {
             connectRequest.setPassword(readUTF(byteBuf));
         }
         return connectRequest;
-    }
-
-    private String readUTF(ByteBuf byteBuf){
-        int len=byteBuf.readUnsignedShort();
-        return super.readUTF(byteBuf,len);
     }
 
     @Override
