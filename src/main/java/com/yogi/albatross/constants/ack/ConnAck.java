@@ -1,6 +1,6 @@
 package com.yogi.albatross.constants.ack;
 
-public enum ConnAck implements IAck{
+public enum ConnAck{
     OK((byte)0x00,"ok"),
     PROTOL_NOT_SUPPORT((byte)0x01,"协议版本不支持"),
     ERROR_CLIENT_ID((byte)0x02,"不合格的客户端标识符"),
@@ -16,7 +16,6 @@ public enum ConnAck implements IAck{
         this.desc = desc;
     }
 
-    @Override
     public byte getCode() {
         return this.code;
     }

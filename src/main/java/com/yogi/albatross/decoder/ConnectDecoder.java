@@ -2,7 +2,6 @@ package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.constants.ack.ConnAck;
-import com.yogi.albatross.constants.ack.IAck;
 import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.constants.common.WillQos;
 import com.yogi.albatross.constants.head.FixedHeadType;
@@ -10,32 +9,20 @@ import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
-import io.netty.util.CharsetUtil;
+import io.netty.channel.ChannelHandlerContext;
 
 @Processor(targetType = FixedHeadType.CONNECT)
 public class ConnectDecoder extends DecoderAdapter {
     @Override
     public BaseRequest process0(SimpleEncapPacket packet) throws Exception {
-        String protocolName=protocolName(packet.getByteBuf());
-        int protocolLevel=protocolLevel(packet.getByteBuf());
+        String protocolName=readUTF(packet.getByteBuf());
+        int protocolLevel=packet.getByteBuf().readByte();
         if(!Constants.PTOTOCOL_NAME.contains(protocolName) || Constants.PROTOCOL_LEVEL<protocolLevel){
             throw  new Exception("protocol["+protocolName+"] or protocol level["+protocolLevel+"] not support");
         }
         ConnectRequest connectRequest=payload(packet,keepLive(packet,connectFlags(packet,null)));
+        connectRequest.setAck(ConnAck.OK);
         return connectRequest;
-    }
-
-    private String protocolName(ByteBuf byteBuf){
-        return readUTF(byteBuf);
-      /*  byteBuf.skipBytes(1);//discard MSB byte
-        byte protocolLen=byteBuf.readByte();
-        byte[] bytes=new byte[protocolLen];
-        byteBuf.readBytes(bytes,0,protocolLen);
-        return new String(bytes, CharsetUtil.UTF_8);*/
-    }
-
-    private int protocolLevel(ByteBuf byteBuf){
-        return byteBuf.readByte();
     }
 
     private ConnectRequest connectFlags(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
@@ -118,29 +105,33 @@ public class ConnectDecoder extends DecoderAdapter {
     }
 
     @Override
-    public byte[] response(BaseRequest request, IAck ack) throws Exception {
-        byte[] bs=new byte[4];
-        bs[0]=0x20;
-        bs[1]=0x02;
-        if(ack!=null){
-            bs[2]=0x00;
-            bs[3]=ack.getCode();
-        }else {
+    public byte[] response(ChannelHandlerContext ctx, BaseRequest request) throws Exception {
+        if(request!=null){
             ConnectRequest cr=(ConnectRequest) request;
-            boolean usernameOrPsw=false;
-            if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){//TODO
-                bs[3]= ConnAck.OK.getCode();
-                usernameOrPsw=true;
-            }else {
-                bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
-            }
-
-            if(usernameOrPsw && true){//TODO 服务端保存了会话状态
-                bs[2]=0x01;
-            }else {
+            byte[] bs=new byte[4];
+            bs[0]=0x20;
+            bs[1]=0x02;
+            if(cr.getAck()!=null){
                 bs[2]=0x00;
+                bs[3]=cr.getAck().getCode();
+            }else {
+                boolean usernameOrPsw=false;
+                if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){//TODO
+                    bs[3]= ConnAck.OK.getCode();
+                    usernameOrPsw=true;
+                }else {
+                    bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
+                }
+
+                if(usernameOrPsw && true){//TODO 服务端保存了会话状态
+                    bs[2]=0x01;
+                }else {
+                    bs[2]=0x00;
+                }
             }
+            return bs;
         }
-        return bs;
+        ctx.close();
+        return null;
     }
 }

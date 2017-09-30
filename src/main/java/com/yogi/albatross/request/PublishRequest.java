@@ -1,11 +1,13 @@
 package com.yogi.albatross.request;
 
+import com.yogi.albatross.constants.common.PublishQos;
+
 public class PublishRequest extends BaseRequest{
     private int dup;
-    private int qos;
+    private PublishQos qos;
     private int retain;
     private String topicName;
-    private String packetId;
+    private int packetId;
     private String payload;
 
     public int getDup() {
@@ -16,11 +18,11 @@ public class PublishRequest extends BaseRequest{
         this.dup = dup;
     }
 
-    public int getQos() {
+    public PublishQos getQos() {
         return qos;
     }
 
-    public void setQos(int qos) {
+    public void setQos(PublishQos qos) {
         this.qos = qos;
     }
 
@@ -40,11 +42,11 @@ public class PublishRequest extends BaseRequest{
         this.topicName = topicName;
     }
 
-    public String getPacketId() {
+    public int getPacketId() {
         return packetId;
     }
 
-    public void setPacketId(String packetId) {
+    public void setPacketId(int packetId) {
         this.packetId = packetId;
     }
 

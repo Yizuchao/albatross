@@ -1,5 +1,6 @@
 package com.yogi.albatross.request;
 
+import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.WillQos;
 
 public class ConnectRequest  extends BaseRequest{
@@ -18,6 +19,8 @@ public class ConnectRequest  extends BaseRequest{
     private String willMessage;//遗嘱消息内容
     private String username;
     private String password;
+
+    private ConnAck ack;
 
     public boolean getClearSession() {
         return clearSession;
@@ -115,6 +118,14 @@ public class ConnectRequest  extends BaseRequest{
         this.password = password;
     }
 
+    public ConnAck getAck() {
+        return ack;
+    }
+
+    public void setAck(ConnAck ack) {
+        this.ack = ack;
+    }
+
     @Override
     public String toString() {
         return "ConnectRequest{" +
@@ -130,6 +141,7 @@ public class ConnectRequest  extends BaseRequest{
                 ", willMessage='" + willMessage + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", ack=" + ack +
                 '}';
     }
 }
