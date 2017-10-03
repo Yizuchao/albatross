@@ -50,4 +50,15 @@ public class MQTTUtils {
     public static int fixedHeaderBytes(int len) throws Exception{
         return lengthBytes(len)+ NumberUtils.INTEGER_ONE;
     }
+
+    /**
+     * 断开连接byte数组
+     * @return
+     */
+    public static byte[] disconnectBytes(){
+        byte[] bytes=new byte[2];
+        bytes[0]=(byte) 0xe0;
+        bytes[1]=(byte) 0x00;
+        return bytes;
+    }
 }
