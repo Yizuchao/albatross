@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
 
 public abstract class DecoderAdapter implements IDecoder {
-    private static final int DEFAULT_UTF_LEN=2;
 
     @Override
     public BaseRequest process(SimpleEncapPacket packet) throws Exception {
@@ -28,7 +27,7 @@ public abstract class DecoderAdapter implements IDecoder {
     }
 
     protected String readUTF(ByteBuf byteBuf){
-        return readUTF(byteBuf,DEFAULT_UTF_LEN);
+        return readUTF(byteBuf,byteBuf.readUnsignedShort());
     }
 
     protected byte[] readBytes(ByteBuf byteBuf, int len){

@@ -32,7 +32,6 @@ public class Starter {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline=socketChannel.pipeline();
-                    pipeline.addLast(new ServerIdleStateHandler());//idle
                     pipeline.addLast(new MQTTDispatchDecoder());//mqtt decoder
                 }
             });

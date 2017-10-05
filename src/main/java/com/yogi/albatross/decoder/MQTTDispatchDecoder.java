@@ -68,9 +68,9 @@ public class MQTTDispatchDecoder extends ByteToMessageDecoder {
 
         //分包
         int readerIndex=in.readerIndex();
-        int fixedHeaderLen=MQTTUtils.lengthBytes(len)+ NumberUtils.INTEGER_ONE;
+        int fixedHeaderLen=MQTTUtils.fixedHeaderBytes(len);
         ByteBuf frame=in.retainedSlice(readerIndex+fixedHeaderLen,len);
-        in.readerIndex(MQTTUtils.fixedHeaderBytes(len)+len);
+        in.readerIndex(readerIndex+fixedHeaderLen+len);
         return frame;
     }
 

@@ -9,6 +9,12 @@ import sun.misc.Unsafe;
 public class MQTTUtils {
     public static final byte variableLenMark = 0b01111111;
 
+    /**
+     *解析长度
+     * @param byteBuf
+     * @return
+     * @throws Exception
+     */
     public static int parseLength(ByteBuf byteBuf) throws Exception{
         int readableSize=byteBuf.readableBytes();
         if(readableSize<=0){
@@ -32,6 +38,13 @@ public class MQTTUtils {
         }
         throw new Exception("the format of packet remaining length error");
     }
+
+    /**
+     * 该长度占用字节数
+     * @param len
+     * @return
+     * @throws Exception
+     */
     public static int lengthBytes(int len) throws Exception{
         if(len<=0x7F){
             return 1;
@@ -47,6 +60,13 @@ public class MQTTUtils {
         }
         throw new Exception("too long");
     }
+
+    /**
+     * 固定头部占用字节数
+     * @param len
+     * @return
+     * @throws Exception
+     */
     public static int fixedHeaderBytes(int len) throws Exception{
         return lengthBytes(len)+ NumberUtils.INTEGER_ONE;
     }
@@ -60,5 +80,40 @@ public class MQTTUtils {
         bytes[0]=(byte) 0xe0;
         bytes[1]=(byte) 0x00;
         return bytes;
+    }
+
+    /**
+     * 将长度解析成字节数组
+     * @param len
+     * @return
+     */
+    public static byte[] lengthToBytes(int len) throws Exception{
+        if(len<=0x7F){
+            byte[] bytes=new byte[1];
+            bytes[0]=(byte)len;
+            return bytes;
+        }
+        if(len<=0xff7f && len>=0x8001){
+            byte[] bytes=new byte[2];
+            bytes[0]=(byte) ((len >>7) & 0xff);
+            bytes[1]=(byte)(0x007f & len);
+            return bytes;
+        }
+        if(len<=0xffff7f && len>=0x808001){
+            byte[] bytes=new byte[3];
+            bytes[0]=(byte)((len >>14) & 0xff);
+            bytes[1]=(byte)((len >>7) & 0x00ff);
+            bytes[2]=(byte)(len & 0x00007f);
+            return bytes;
+        }
+        if(len<=0xffffff7f && len>=0x80808001){
+            byte[] bytes=new byte[4];
+            bytes[0]=(byte)((len>>21) & 0xff);
+            bytes[1]=(byte)((len>>14) & 0x00ff);
+            bytes[2]=(byte)((len>>7) & 0x0000ff);
+            bytes[3]=(byte)(len & 0x0000007f);
+            return bytes;
+        }
+        throw new Exception("length too long ");
     }
 }

@@ -1,5 +1,7 @@
 package netty.echo.client;
 
+import com.google.common.collect.Lists;
+import com.yogi.albatross.utils.CollectionUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -11,7 +13,10 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
+import org.fusesource.mqtt.client.QoS;
+import org.fusesource.mqtt.client.Topic;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +64,13 @@ public class EchoClient {
         /*final String host = args[0];
         final int port = NumberUtils.toInt(args[1],6080);*/
 
-        BlockingConnection connection=new EchoClient("127.0.0.1", 10090).connect();
+        /*BlockingConnection connection=new EchoClient("127.0.0.1", 10090).connect();*///connect
+
+        List<String> topicNames=Lists.newArrayListWithExpectedSize(1);
+        topicNames.add("hehe");
+        List<Integer> qos=Lists.newArrayListWithExpectedSize(1);
+        qos.add(2);
+        new EchoClient("127.0.0.1", 10090).subscribe(topicNames,qos);
     }
 
     public BlockingConnection connect() throws Exception{
@@ -77,5 +88,31 @@ public class EchoClient {
         }
         return connection;
     }
-
+    public void subscribe(List<String> topicNames,List<Integer> qos) throws Exception{
+        if(CollectionUtils.isEmpty(topicNames)){
+            return;
+        }
+        int topicNameSize=topicNames.size();
+        int qosSize=qos.size();
+        if(topicNameSize!=qosSize){
+            return;
+        }
+        List<Topic> topics= Lists.newArrayListWithExpectedSize(topicNameSize);
+        for (int i = 0; i < topicNameSize; i++) {
+            Topic topic=new Topic(topicNames.get(i),intToQos(qos.get(i)));
+            topics.add(topic);
+        }
+        BlockingConnection connect = connect();
+        Topic[] topicsArr=new Topic[topicNameSize];
+        connect.subscribe(topics.toArray(topicsArr));
+    }
+    private QoS intToQos(int qos){
+        if(qos==0){
+            return QoS.AT_MOST_ONCE;
+        }
+        if(qos==1){
+            return QoS.EXACTLY_ONCE;
+        }
+        return QoS.AT_LEAST_ONCE;
+    }
 }
