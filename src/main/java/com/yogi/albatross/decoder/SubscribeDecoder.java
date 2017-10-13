@@ -9,6 +9,7 @@ import com.yogi.albatross.request.SubscribeRequest;
 import com.yogi.albatross.utils.MQTTUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 
@@ -37,22 +38,22 @@ public class SubscribeDecoder extends DecoderAdapter {
         int variableHeaderLen=topicsSize+2;//话题长度+packetId长度
         byte[] lenBytes = MQTTUtils.lengthToBytes(variableHeaderLen);//长度字段数组
 
-        byte[] bytes=new byte[lenBytes.length+1+variableHeaderLen];
-        int index=0;
+        byte[] bytes=new byte[lenBytes.length+NumberUtils.INTEGER_ONE+variableHeaderLen];
+        int index= NumberUtils.INTEGER_ZERO;
         bytes[index++]=(byte)0x90;//type
 
         //length bytes
-        for (int i = 0; i < lenBytes.length; i++) {
-            bytes[index=index+i]=lenBytes[i];
+        for (int i = NumberUtils.INTEGER_ZERO; i < lenBytes.length; i++) {
+            bytes[index++]=lenBytes[i];
         }
 
         //packet id
-        bytes[++index]=(byte) ((subscribeRequest.getPacketId() & 0xff00) >> 8);
-        bytes[++index]=(byte) (subscribeRequest.getPacketId() & 0x00ff);
+        bytes[index++]=(byte) ((subscribeRequest.getPacketId() & 0xff00) >> 8);
+        bytes[index++]=(byte) (subscribeRequest.getPacketId() & 0x00ff);
 
         //topic qos reponse
         for (int i=0;i<topicsSize;i++) {//TODO 每个返回码对应等待确认的SUBSCRIBE报文中的一个主题过滤器
-            bytes[i+(++index)]=0x00;//默认返回成功
+            bytes[index++]=0x00;//默认返回成功
         }
         return bytes;
     }
