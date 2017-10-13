@@ -65,18 +65,22 @@ public class EchoClient {
         final int port = NumberUtils.toInt(args[1],6080);*/
 
         /*BlockingConnection connection=new EchoClient("127.0.0.1", 10090).connect();*///connect
-
+        CountDownLatch countDownLatch=new CountDownLatch(1);
         List<String> topicNames=Lists.newArrayListWithExpectedSize(1);
         topicNames.add("hehe");
+        topicNames.add("haha");
         List<Integer> qos=Lists.newArrayListWithExpectedSize(1);
         qos.add(2);
-        new EchoClient("127.0.0.1", 10090).subscribe(topicNames,qos);
+        qos.add(1);
+        //new EchoClient("127.0.0.1", 10090).subscribe(topicNames,qos);
+        new EchoClient("127.0.0.1", 10090).unsubscribe(topicNames);
+        countDownLatch.await();
     }
 
     public BlockingConnection connect() throws Exception{
         MQTT mqtt = new MQTT();
         mqtt.setClientId(clientId.toString());
-        mqtt.setKeepAlive((short)10000);
+        mqtt.setKeepAlive((short)10);
         mqtt.setCleanSession(true);
         mqtt.setUserName("yogi");
         mqtt.setPassword("123456");
@@ -105,6 +109,14 @@ public class EchoClient {
         BlockingConnection connect = connect();
         Topic[] topicsArr=new Topic[topicNameSize];
         connect.subscribe(topics.toArray(topicsArr));
+    }
+    public void unsubscribe(List<String> topicNames) throws Exception{
+        if(CollectionUtils.isEmpty(topicNames)){
+            return;
+        }
+        String[] topicArr=new String[topicNames.size()];
+        BlockingConnection connect = connect();
+        connect.unsubscribe(topicNames.toArray(topicArr));
     }
     private QoS intToQos(int qos){
         if(qos==0){
