@@ -1,6 +1,9 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
+import com.yogi.albatross.common.server.ChannelTime;
+import com.yogi.albatross.common.server.ChannelTimeHolder;
+import com.yogi.albatross.common.server.ServerSession;
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.constants.common.WillQos;
@@ -9,7 +12,11 @@ import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 
 @Processor(targetType = FixedHeadType.CONNECT)
 public class ConnectDecoder extends DecoderAdapter {
@@ -119,6 +126,7 @@ public class ConnectDecoder extends DecoderAdapter {
                 if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){//TODO
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
+                    createSession(ctx,cr);
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
                 }
@@ -133,5 +141,17 @@ public class ConnectDecoder extends DecoderAdapter {
         }
         ctx.close();
         return null;
+    }
+    private void createSession(ChannelHandlerContext ctx, ConnectRequest request){
+        Channel channel=ctx.channel();
+        String channelId=channel.id().asLongText();
+        ChannelTime channelTime=new ChannelTime(request.getKeepLiveSecond()*1000,channel);
+        ChannelTimeHolder.put(channelId,channelTime);
+
+        ServerSession serverSession=new ServerSession();
+        serverSession.setUserId(request.getUsername());
+        serverSession.setChannelId(channelId);
+        Attribute<ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
+        attr.setIfAbsent(serverSession);
     }
 }
