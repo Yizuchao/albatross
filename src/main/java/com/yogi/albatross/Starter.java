@@ -1,5 +1,6 @@
 package com.yogi.albatross;
 
+import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.decoder.MQTTDispatchDecoder;
 import com.yogi.albatross.handler.ServerIdleStateHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -36,6 +37,10 @@ public class Starter {
                 }
             });
             ChannelFuture future = bootstrap.channel(NioServerSocketChannel.class).bind();
+
+            //init
+            init();
+
             future.sync();//block
             logger.info("albatross success started on port:{}",port);
             future.channel().closeFuture().sync();
@@ -45,6 +50,15 @@ public class Starter {
             selectorGroup.shutdownGracefully();
             group.shutdownGracefully();
         }
+
+    }
+
+    /**
+     * init
+     */
+    public static void init(){
+        //dao init
+        DaoManager.init("com.yogi.albatross");
 
     }
 }

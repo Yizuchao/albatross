@@ -9,6 +9,9 @@ import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.constants.common.WillQos;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.db.DaoManager;
+import com.yogi.albatross.db.user.dao.UserDao;
+import com.yogi.albatross.db.user.dto.UserDto;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
@@ -20,6 +23,12 @@ import io.netty.util.AttributeKey;
 
 @Processor(targetType = FixedHeadType.CONNECT)
 public class ConnectDecoder extends DecoderAdapter {
+    private UserDao dao;
+
+    public ConnectDecoder() {
+        dao= DaoManager.getDao(UserDao.class);
+    }
+
     @Override
     public BaseRequest process0(SimpleEncapPacket packet) throws Exception {
         String protocolName=readUTF(packet.getByteBuf());
@@ -123,7 +132,8 @@ public class ConnectDecoder extends DecoderAdapter {
                 bs[3]=cr.getAck().getCode();
             }else {
                 boolean usernameOrPsw=false;
-                if("yogi".equals(cr.getUsername())&& "123456".equals(cr.getPassword())){//TODO
+                UserDto dto = dao.selectByUsername(cr.getUsername());
+                if(dto!=null && dto.getPassword().equals(cr.getPassword())){
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
                     createSession(ctx,cr);
