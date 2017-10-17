@@ -13,7 +13,7 @@ public class DbPool {
     public static void init(){
         Properties properties=new Properties();
         try {
-            properties.load(DbPool.class.getResourceAsStream(DB_CONFIG));
+            properties.load(DbPool.class.getClassLoader().getResourceAsStream(DB_CONFIG));
             dataSource= DruidDataSourceFactory.createDataSource(properties);
         }catch (Exception e){
             e.printStackTrace();

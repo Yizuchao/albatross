@@ -37,7 +37,6 @@ public class ConnectDecoder extends DecoderAdapter {
             throw  new Exception("protocol["+protocolName+"] or protocol level["+protocolLevel+"] not support");
         }
         ConnectRequest connectRequest=payload(packet,keepLive(packet,connectFlags(packet,null)));
-        connectRequest.setAck(ConnAck.OK);
         return connectRequest;
     }
 
@@ -134,6 +133,8 @@ public class ConnectDecoder extends DecoderAdapter {
                 boolean usernameOrPsw=false;
                 UserDto dto = dao.selectByUsername(cr.getUsername());
                 if(dto!=null && dto.getPassword().equals(cr.getPassword())){
+                    dao.updateLastLoginTime(cr.getUsername());
+
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
                     createSession(ctx,cr);

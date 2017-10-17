@@ -2,6 +2,7 @@ package netty.echo.client;
 
 import com.google.common.collect.Lists;
 import com.yogi.albatross.utils.CollectionUtils;
+import com.yogi.albatross.utils.MD5Utils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -82,8 +83,8 @@ public class EchoClient {
         mqtt.setClientId(clientId.toString());
         mqtt.setKeepAlive((short)10);
         mqtt.setCleanSession(true);
-        mqtt.setUserName("yogi");
-        mqtt.setPassword("123456");
+        mqtt.setUserName("admin");
+        mqtt.setPassword(MD5Utils.encode("123456"));
         mqtt.setHost("127.0.0.1",10090);
         BlockingConnection connection=mqtt.blockingConnection();
         connection.connect();

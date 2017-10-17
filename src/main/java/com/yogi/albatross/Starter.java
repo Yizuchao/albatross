@@ -58,7 +58,7 @@ public class Starter {
      */
     public static void init(){
         //dao init
-        DaoManager.init("com.yogi.albatross");
+        DaoManager.init("com.yogi.albatross.db");
 
     }
 }
