@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.db.DaoManager;
+import com.yogi.albatross.db.topic.dao.TopicDao;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.SubscribeRequest;
 import com.yogi.albatross.utils.MQTTUtils;
@@ -15,6 +17,12 @@ import java.util.List;
 
 @Processor(targetType = FixedHeadType.SUBSCRIBE)
 public class SubscribeDecoder extends DecoderAdapter {
+    private TopicDao topicDao;
+
+    public SubscribeDecoder() {
+        topicDao= DaoManager.getDao(TopicDao.class);
+    }
+
     @Override
     protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
         ByteBuf byteBuf=packet.getByteBuf();
@@ -34,6 +42,9 @@ public class SubscribeDecoder extends DecoderAdapter {
     @Override
     public byte[] response(ChannelHandlerContext ctx, BaseRequest request) throws Exception {
         SubscribeRequest subscribeRequest=(SubscribeRequest)request;
+        //if(topicDao.saveOrSubscribe(subscribeRequest.getTopics(),Integer.parseInt(currentUser(ctx)),SubscribeRequest.getTopics());
+
+        //response bytes
         int topicsSize=subscribeRequest.getTopics().size();
         int variableHeaderLen=topicsSize+2;//话题长度+packetId长度
         byte[] lenBytes = MQTTUtils.lengthToBytes(variableHeaderLen);//长度字段数组

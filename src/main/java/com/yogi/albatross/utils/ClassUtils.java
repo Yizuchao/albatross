@@ -139,6 +139,9 @@ public class ClassUtils {
     private static void addClassName(List<Class<?>> clazzList, String clazzName, Class<? extends Annotation> annotation) {
         if (clazzList != null && clazzName != null) {
             Class<?> clazz = null;
+            if(clazzName.endsWith(".class")){
+                clazzName=clazzName.substring(0,clazzName.lastIndexOf("."));
+            }
             try {
                 clazz = Class.forName(clazzName);
             } catch (ClassNotFoundException e) {

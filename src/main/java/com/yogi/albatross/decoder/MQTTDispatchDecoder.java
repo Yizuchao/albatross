@@ -48,6 +48,8 @@ public class MQTTDispatchDecoder extends ByteToMessageDecoder {
                 }
                 BaseRequest request = decoder.process(simpleEncapPacket);
 
+                //TODO 全局用户登录验证
+
                 byte[] bytes=decoder.response(ctx,request);
                 if(bytes!=null && bytes.length>0){//立即返回响应报文
                     ByteBuf buffer=ctx.alloc().directBuffer();

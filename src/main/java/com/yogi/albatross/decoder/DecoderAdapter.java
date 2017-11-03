@@ -1,10 +1,13 @@
 package com.yogi.albatross.decoder;
 
+import com.yogi.albatross.common.server.ServerSession;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 
 public abstract class DecoderAdapter implements IDecoder {
@@ -34,5 +37,13 @@ public abstract class DecoderAdapter implements IDecoder {
         byte[] bytes=new byte[len];
         byteBuf.readBytes(bytes);
         return bytes;
+    }
+
+    protected String currentUser(ChannelHandlerContext ctx){
+        return getSession(ctx).getUserId();
+    }
+
+    protected ServerSession getSession(ChannelHandlerContext ctx){
+        return (ServerSession) ctx.channel().attr(AttributeKey.valueOf(ctx.channel().id().asLongText())).get();
     }
 }
