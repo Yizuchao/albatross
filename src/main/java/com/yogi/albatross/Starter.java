@@ -35,6 +35,7 @@ public class Starter {
                     ChannelPipeline pipeline=socketChannel.pipeline();
                     //ChannelOutboundHandler 在注册的时候需要放在最后一个ChannelInboundHandler之前，否则将无法传递到ChannelOutboundHandler。
                     pipeline.addLast(new MQTTDispatchDecoder());//mqtt decoder
+                    //ChannelInboundHandler之间的传递，通过调用 ctx.fireChannelRead(msg) 实现；
                 }
             });
             ChannelFuture future = bootstrap.channel(NioServerSocketChannel.class).bind();
