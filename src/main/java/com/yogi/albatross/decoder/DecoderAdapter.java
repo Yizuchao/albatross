@@ -1,14 +1,12 @@
 package com.yogi.albatross.decoder;
 
-import com.yogi.albatross.common.server.ServerSession;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
+import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
 
 public abstract class DecoderAdapter implements IDecoder {
 

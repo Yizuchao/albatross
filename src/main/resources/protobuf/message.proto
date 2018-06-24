@@ -1,0 +1,13 @@
+syntax = "proto3";
+option java_package="com.yogi.albatross.common.server";
+option java_outer_classname="MessageProto";
+message Message{
+    string messageId=1;
+    int32 to=2;//消息要发布的队列或者主题
+    enum Type{
+        QUEUE=0;
+        TOPIC=1;
+    }
+    Type type=3;//队列消息或者主题消息
+    bytes content=4;
+}

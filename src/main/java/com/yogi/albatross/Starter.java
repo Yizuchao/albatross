@@ -1,8 +1,9 @@
 package com.yogi.albatross;
 
+import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.decoder.MQTTDispatchDecoder;
-import com.yogi.albatross.handler.ServerIdleStateHandler;
+import com.yogi.albatross.decoder.ServerIdleStateHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -11,6 +12,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,8 @@ public class Starter {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline=socketChannel.pipeline();
+
+                    pipeline.addLast(new ServerIdleStateHandler());
                     //ChannelOutboundHandler 在注册的时候需要放在最后一个ChannelInboundHandler之前，否则将无法传递到ChannelOutboundHandler。
                     pipeline.addLast(new MQTTDispatchDecoder());//mqtt decoder
                     //ChannelInboundHandler之间的传递，通过调用 ctx.fireChannelRead(msg) 实现；

@@ -5,6 +5,9 @@ import com.google.common.collect.Maps;
 
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * 保存每个channel过期时间
+ */
 public class ChannelTimeHolder {
     private static final ConcurrentMap<String,ChannelTime> map= Maps.newConcurrentMap();
 
@@ -24,5 +27,14 @@ public class ChannelTimeHolder {
             channelTime.getChannel().close();
             return null;
         }
+    }
+    public static boolean remove(String channelId){
+        try{
+            map.remove(channelId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

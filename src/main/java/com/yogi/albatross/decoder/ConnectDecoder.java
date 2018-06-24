@@ -1,9 +1,8 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.common.server.ChannelTime;
 import com.yogi.albatross.common.server.ChannelTimeHolder;
-import com.yogi.albatross.common.server.ServerSession;
+import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.constants.common.WillQos;
@@ -16,8 +15,9 @@ import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
@@ -47,7 +47,7 @@ public class ConnectDecoder extends DecoderAdapter {
         byte flags=packet.getByteBuf().readByte();
         if((flags & 0x02)!=0){//clean session
             connectRequest.setClearSession(true);
-            //TODO clear old session and create a new session
+            clearSession(packet.getCtx());
         }else{
             connectRequest.setClearSession(false);
             //TODO recovery session
@@ -96,7 +96,11 @@ public class ConnectDecoder extends DecoderAdapter {
         return connectRequest;
     }
     private ConnectRequest keepLive(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
-        connectRequest.setKeepLiveSecond(packet.getByteBuf().readShort());
+        short requestKeepLiveTime=packet.getByteBuf().readShort();
+        connectRequest.setKeepLiveSecond(requestKeepLiveTime);
+        //空闲链路检测
+        int keepLiveTime=Math.max(10,requestKeepLiveTime)*1000;
+        packet.getCtx().pipeline().addLast(new IdleStateHandler(keepLiveTime,keepLiveTime,keepLiveTime));
         return connectRequest;
     }
     private  ConnectRequest payload(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
@@ -153,16 +157,34 @@ public class ConnectDecoder extends DecoderAdapter {
         ctx.close();
         return null;
     }
+
+    /**
+     *  创建session
+     * @param ctx
+     * @param request
+     */
     private void createSession(ChannelHandlerContext ctx, ConnectRequest request){
         Channel channel=ctx.channel();
         String channelId=channel.id().asLongText();
-        ChannelTime channelTime=new ChannelTime(request.getKeepLiveSecond()*1000,channel);
-        ChannelTimeHolder.put(channelId,channelTime);
+        ServerSessionProto.ServerSession.Builder builder = ServerSessionProto.ServerSession.newBuilder();
+        builder.setUserId(request.getUsername());
+        builder.setChannelId(request.getUsername());
+        builder.setKeepLiveSecond(request.getKeepLiveSecond()*1000);
+        ServerSessionProto.ServerSession serverSession=builder.build();
+        Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
+        attr.set(serverSession);
+    }
 
-        ServerSession serverSession=new ServerSession();
-        serverSession.setUserId(request.getUsername());
-        serverSession.setChannelId(channelId);
-        Attribute<ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
-        attr.setIfAbsent(serverSession);
+    /**
+     *  清楚session
+     * @param ctx
+     */
+    private void clearSession(ChannelHandlerContext ctx){
+        Channel channel=ctx.channel();
+        String channelId=channel.id().asLongText();
+        ChannelTimeHolder.remove(channelId);
+
+        Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
+        attr.set(null);
     }
 }

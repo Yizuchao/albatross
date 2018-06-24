@@ -1,0 +1,12 @@
+syntax = "proto3";
+option java_package="com.yogi.albatross.common.server";
+option java_outer_classname="ServerSessionProto";
+import "message.proto";
+message ServerSession {
+    string userId=1;
+    string channelId=2;
+    repeated Message sendNoAcks=3;
+    repeated Message willSends=4;
+    repeated Message recNoAcks=5;
+    int64 keepLiveSecond=6;
+}
