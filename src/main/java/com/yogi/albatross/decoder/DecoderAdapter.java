@@ -14,7 +14,12 @@ public abstract class DecoderAdapter implements IDecoder {
     public BaseRequest process(SimpleEncapPacket packet) throws Exception {
         try{
             return process0(packet);
-        }finally {
+        }catch (Exception e){
+            e.printStackTrace();
+            packet.getCtx().close();
+            return null;
+        }
+        finally {
             boolean release = packet.getByteBuf().release();
             while (!release){//释放bytebuf
                 release=packet.getByteBuf().release();

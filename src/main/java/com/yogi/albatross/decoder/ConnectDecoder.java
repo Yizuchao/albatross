@@ -9,6 +9,7 @@ import com.yogi.albatross.constants.common.WillQos;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.db.DaoManager;
+import com.yogi.albatross.db.server.dao.ServerDao;
 import com.yogi.albatross.db.user.dao.UserDao;
 import com.yogi.albatross.db.user.dto.UserDto;
 import com.yogi.albatross.request.BaseRequest;
@@ -24,9 +25,11 @@ import io.netty.util.AttributeKey;
 @Processor(targetType = FixedHeadType.CONNECT)
 public class ConnectDecoder extends DecoderAdapter {
     private UserDao dao;
+    private ServerDao serverDao;
 
     public ConnectDecoder() {
         dao= DaoManager.getDao(UserDao.class);
+        serverDao=DaoManager.getDao(ServerDao.class);
     }
 
     @Override
@@ -50,7 +53,6 @@ public class ConnectDecoder extends DecoderAdapter {
             clearSession(packet.getCtx());
         }else{
             connectRequest.setClearSession(false);
-            //TODO recovery session
         }
         if((flags & 0x04)!=0){//Will Flag
             connectRequest.setWillFlag(true);
@@ -68,10 +70,10 @@ public class ConnectDecoder extends DecoderAdapter {
             connectRequest.setWillQos(WillQos.valueOf(willQos));
         }
         if((flags & 0x20)==0){//Will Retain
-            connectRequest.setWillRetain(true);
+            connectRequest.setWillRetain(false);
             //TODO 服务端必须将遗嘱消息当作非保留消息发布
         }else{
-            connectRequest.setWillRetain(false);
+            connectRequest.setWillRetain(true);
             //TODO 服务端必须将遗嘱消息当作保留消息发布
         }
         int usernameFlag=flags & 0x80;
@@ -141,7 +143,13 @@ public class ConnectDecoder extends DecoderAdapter {
 
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
-                    createSession(ctx,cr);
+                    boolean createSession=cr.getClearSession();
+                    if(!createSession){//没有设置清除session，则尝试恢复session
+                        createSession=!recoverySession(ctx,dto.getId());
+                    }
+                    if(createSession){//创建session
+                        createSession(ctx,cr);
+                    }
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
                 }
@@ -174,6 +182,24 @@ public class ConnectDecoder extends DecoderAdapter {
         Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
         attr.set(serverSession);
     }
+
+    /**
+     * 恢复session
+     * @param ctx
+     * @param userId
+     */
+    private boolean recoverySession(ChannelHandlerContext ctx,Long userId){
+        ServerSessionProto.ServerSession serverSession=serverDao.getSessionFromDb(userId);
+        if(serverSession!=null){
+            Channel channel=ctx.channel();
+            String channelId=channel.id().asLongText();
+            Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
+            attr.set(serverSession);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      *  清楚session

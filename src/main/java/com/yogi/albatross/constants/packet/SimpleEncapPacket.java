@@ -1,6 +1,5 @@
 package com.yogi.albatross.constants.packet;
 
-import com.yogi.albatross.constants.head.FixedHeadType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

@@ -24,7 +24,7 @@ public class UserDao {
             if(resultSet!=null){
                 while (resultSet.next()){
                     UserDto dto=new UserDto();
-                    dto.setId(resultSet.getInt("id"));
+                    dto.setId(resultSet.getLong("id"));
                     dto.setPassword(resultSet.getString("password"));
                     dto.setUsername(resultSet.getString("username"));
                     return dto;
