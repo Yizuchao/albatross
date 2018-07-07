@@ -9,4 +9,7 @@ message ServerSession {
     repeated Message willSends=4;
     repeated Message recNoAcks=5;
     int64 keepLiveSecond=6;
+    int32 willFalg=7;
+    int32 willQos=8;
+    int32 willRetain=9;
 }

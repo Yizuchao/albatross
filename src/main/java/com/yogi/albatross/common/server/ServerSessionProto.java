@@ -114,6 +114,21 @@ public final class ServerSessionProto {
      * <code>int64 keepLiveSecond = 6;</code>
      */
     long getKeepLiveSecond();
+
+    /**
+     * <code>int32 willFalg = 7;</code>
+     */
+    int getWillFalg();
+
+    /**
+     * <code>int32 willQos = 8;</code>
+     */
+    int getWillQos();
+
+    /**
+     * <code>int32 willRetain = 9;</code>
+     */
+    int getWillRetain();
   }
   /**
    * Protobuf type {@code ServerSession}
@@ -134,6 +149,9 @@ public final class ServerSessionProto {
       willSends_ = java.util.Collections.emptyList();
       recNoAcks_ = java.util.Collections.emptyList();
       keepLiveSecond_ = 0L;
+      willFalg_ = 0;
+      willQos_ = 0;
+      willRetain_ = 0;
     }
 
     @java.lang.Override
@@ -160,13 +178,6 @@ public final class ServerSessionProto {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
@@ -211,6 +222,28 @@ public final class ServerSessionProto {
               keepLiveSecond_ = input.readInt64();
               break;
             }
+            case 56: {
+
+              willFalg_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              willQos_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              willRetain_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -237,6 +270,7 @@ public final class ServerSessionProto {
       return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_fieldAccessorTable
@@ -427,7 +461,35 @@ public final class ServerSessionProto {
       return keepLiveSecond_;
     }
 
+    public static final int WILLFALG_FIELD_NUMBER = 7;
+    private int willFalg_;
+    /**
+     * <code>int32 willFalg = 7;</code>
+     */
+    public int getWillFalg() {
+      return willFalg_;
+    }
+
+    public static final int WILLQOS_FIELD_NUMBER = 8;
+    private int willQos_;
+    /**
+     * <code>int32 willQos = 8;</code>
+     */
+    public int getWillQos() {
+      return willQos_;
+    }
+
+    public static final int WILLRETAIN_FIELD_NUMBER = 9;
+    private int willRetain_;
+    /**
+     * <code>int32 willRetain = 9;</code>
+     */
+    public int getWillRetain() {
+      return willRetain_;
+    }
+
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -437,6 +499,7 @@ public final class ServerSessionProto {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getUserIdBytes().isEmpty()) {
@@ -457,9 +520,19 @@ public final class ServerSessionProto {
       if (keepLiveSecond_ != 0L) {
         output.writeInt64(6, keepLiveSecond_);
       }
+      if (willFalg_ != 0) {
+        output.writeInt32(7, willFalg_);
+      }
+      if (willQos_ != 0) {
+        output.writeInt32(8, willQos_);
+      }
+      if (willRetain_ != 0) {
+        output.writeInt32(9, willRetain_);
+      }
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -486,6 +559,18 @@ public final class ServerSessionProto {
       if (keepLiveSecond_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(6, keepLiveSecond_);
+      }
+      if (willFalg_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, willFalg_);
+      }
+      if (willQos_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, willQos_);
+      }
+      if (willRetain_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, willRetain_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -515,6 +600,12 @@ public final class ServerSessionProto {
           .equals(other.getRecNoAcksList());
       result = result && (getKeepLiveSecond()
           == other.getKeepLiveSecond());
+      result = result && (getWillFalg()
+          == other.getWillFalg());
+      result = result && (getWillQos()
+          == other.getWillQos());
+      result = result && (getWillRetain()
+          == other.getWillRetain());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -545,6 +636,12 @@ public final class ServerSessionProto {
       hash = (37 * hash) + KEEPLIVESECOND_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getKeepLiveSecond());
+      hash = (37 * hash) + WILLFALG_FIELD_NUMBER;
+      hash = (53 * hash) + getWillFalg();
+      hash = (37 * hash) + WILLQOS_FIELD_NUMBER;
+      hash = (53 * hash) + getWillQos();
+      hash = (37 * hash) + WILLRETAIN_FIELD_NUMBER;
+      hash = (53 * hash) + getWillRetain();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -620,6 +717,7 @@ public final class ServerSessionProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -627,6 +725,7 @@ public final class ServerSessionProto {
     public static Builder newBuilder(com.yogi.albatross.common.server.ServerSessionProto.ServerSession prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -650,6 +749,7 @@ public final class ServerSessionProto {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_fieldAccessorTable
@@ -675,6 +775,7 @@ public final class ServerSessionProto {
           getRecNoAcksFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         userId_ = "";
@@ -701,18 +802,27 @@ public final class ServerSessionProto {
         }
         keepLiveSecond_ = 0L;
 
+        willFalg_ = 0;
+
+        willQos_ = 0;
+
+        willRetain_ = 0;
+
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
       }
 
+      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession getDefaultInstanceForType() {
         return com.yogi.albatross.common.server.ServerSessionProto.ServerSession.getDefaultInstance();
       }
 
+      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession build() {
         com.yogi.albatross.common.server.ServerSessionProto.ServerSession result = buildPartial();
         if (!result.isInitialized()) {
@@ -721,6 +831,7 @@ public final class ServerSessionProto {
         return result;
       }
 
+      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession buildPartial() {
         com.yogi.albatross.common.server.ServerSessionProto.ServerSession result = new com.yogi.albatross.common.server.ServerSessionProto.ServerSession(this);
         int from_bitField0_ = bitField0_;
@@ -755,37 +866,47 @@ public final class ServerSessionProto {
           result.recNoAcks_ = recNoAcksBuilder_.build();
         }
         result.keepLiveSecond_ = keepLiveSecond_;
+        result.willFalg_ = willFalg_;
+        result.willQos_ = willQos_;
+        result.willRetain_ = willRetain_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.yogi.albatross.common.server.ServerSessionProto.ServerSession) {
           return mergeFrom((com.yogi.albatross.common.server.ServerSessionProto.ServerSession)other);
@@ -886,15 +1007,26 @@ public final class ServerSessionProto {
         if (other.getKeepLiveSecond() != 0L) {
           setKeepLiveSecond(other.getKeepLiveSecond());
         }
+        if (other.getWillFalg() != 0) {
+          setWillFalg(other.getWillFalg());
+        }
+        if (other.getWillQos() != 0) {
+          setWillQos(other.getWillQos());
+        }
+        if (other.getWillRetain() != 0) {
+          setWillRetain(other.getWillRetain());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1797,11 +1929,91 @@ public final class ServerSessionProto {
         onChanged();
         return this;
       }
+
+      private int willFalg_ ;
+      /**
+       * <code>int32 willFalg = 7;</code>
+       */
+      public int getWillFalg() {
+        return willFalg_;
+      }
+      /**
+       * <code>int32 willFalg = 7;</code>
+       */
+      public Builder setWillFalg(int value) {
+        
+        willFalg_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 willFalg = 7;</code>
+       */
+      public Builder clearWillFalg() {
+        
+        willFalg_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int willQos_ ;
+      /**
+       * <code>int32 willQos = 8;</code>
+       */
+      public int getWillQos() {
+        return willQos_;
+      }
+      /**
+       * <code>int32 willQos = 8;</code>
+       */
+      public Builder setWillQos(int value) {
+        
+        willQos_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 willQos = 8;</code>
+       */
+      public Builder clearWillQos() {
+        
+        willQos_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int willRetain_ ;
+      /**
+       * <code>int32 willRetain = 9;</code>
+       */
+      public int getWillRetain() {
+        return willRetain_;
+      }
+      /**
+       * <code>int32 willRetain = 9;</code>
+       */
+      public Builder setWillRetain(int value) {
+        
+        willRetain_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 willRetain = 9;</code>
+       */
+      public Builder clearWillRetain() {
+        
+        willRetain_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1823,6 +2035,7 @@ public final class ServerSessionProto {
 
     private static final com.google.protobuf.Parser<ServerSession>
         PARSER = new com.google.protobuf.AbstractParser<ServerSession>() {
+      @java.lang.Override
       public ServerSession parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1840,6 +2053,7 @@ public final class ServerSessionProto {
       return PARSER;
     }
 
+    @java.lang.Override
     public com.yogi.albatross.common.server.ServerSessionProto.ServerSession getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -1860,13 +2074,15 @@ public final class ServerSessionProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024server_session.proto\032\rmessage.proto\"\242\001" +
+      "\n\024server_session.proto\032\rmessage.proto\"\331\001" +
       "\n\rServerSession\022\016\n\006userId\030\001 \001(\t\022\021\n\tchann" +
       "elId\030\002 \001(\t\022\034\n\nsendNoAcks\030\003 \003(\0132\010.Message" +
       "\022\033\n\twillSends\030\004 \003(\0132\010.Message\022\033\n\trecNoAc" +
       "ks\030\005 \003(\0132\010.Message\022\026\n\016keepLiveSecond\030\006 \001" +
-      "(\003B6\n com.yogi.albatross.common.serverB\022" +
-      "ServerSessionProtob\006proto3"
+      "(\003\022\020\n\010willFalg\030\007 \001(\005\022\017\n\007willQos\030\010 \001(\005\022\022\n" +
+      "\nwillRetain\030\t \001(\005B6\n com.yogi.albatross." +
+      "common.serverB\022ServerSessionProtob\006proto" +
+      "3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1886,7 +2102,7 @@ public final class ServerSessionProto {
     internal_static_ServerSession_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ServerSession_descriptor,
-        new java.lang.String[] { "UserId", "ChannelId", "SendNoAcks", "WillSends", "RecNoAcks", "KeepLiveSecond", });
+        new java.lang.String[] { "UserId", "ChannelId", "SendNoAcks", "WillSends", "RecNoAcks", "KeepLiveSecond", "WillFalg", "WillQos", "WillRetain", });
     com.yogi.albatross.common.server.MessageProto.getDescriptor();
   }
 

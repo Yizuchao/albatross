@@ -1,19 +1,21 @@
 package com.yogi.albatross.constants.packet;
 
+import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.base.MqttChannelHandlerContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
 
 public class SimpleEncapPacket {
-    private ChannelHandlerContext ctx;//context
+    private AbstractMqttChannelHandlerContext ctx;//context
     private List<Object> out;
     private byte headByte;//headByte
     private int len;//packet content length
     private ByteBuf byteBuf;//surplus byteBuf
 
     public SimpleEncapPacket(ChannelHandlerContext ctx,ByteBuf byteBuf, List<Object> out) {
-        this.ctx = ctx;
+        this.ctx = new MqttChannelHandlerContext(ctx);
         this.out = out;
         this.byteBuf = byteBuf;
     }
@@ -38,7 +40,7 @@ public class SimpleEncapPacket {
         return byteBuf;
     }
 
-    public ChannelHandlerContext getCtx() {
+    public AbstractMqttChannelHandlerContext getCtx() {
         return ctx;
     }
 

@@ -10,19 +10,16 @@ import com.yogi.albatross.utils.ClassUtils;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MQTTUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
-public class MQTTDispatchDecoder extends ByteToMessageDecoder {
-    private static final Logger logger= LoggerFactory.getLogger(MQTTDispatchDecoder.class);
+public class MqttDispatchDecoder extends ByteToMessageDecoder {
+    private static final Logger logger= LoggerFactory.getLogger(MqttDispatchDecoder.class);
     private final static Map<FixedHeadType,IDecoder> processors = Maps.newHashMap();
 
     static {
@@ -47,8 +44,6 @@ public class MQTTDispatchDecoder extends ByteToMessageDecoder {
                     ctx.close();
                 }
                 BaseRequest request = decoder.process(simpleEncapPacket);
-
-                //TODO 全局用户登录验证
 
                 byte[] bytes=decoder.response(ctx,request);
                 if(bytes!=null && bytes.length>0){//立即返回响应报文

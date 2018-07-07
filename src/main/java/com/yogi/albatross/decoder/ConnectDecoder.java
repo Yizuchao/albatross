@@ -1,6 +1,8 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
+import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.base.MqttChannel;
 import com.yogi.albatross.common.server.ChannelTimeHolder;
 import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.constants.ack.ConnAck;
@@ -9,27 +11,28 @@ import com.yogi.albatross.constants.common.WillQos;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.db.DaoManager;
-import com.yogi.albatross.db.server.dao.ServerDao;
+import com.yogi.albatross.db.server.dao.UserSessionDao;
+import com.yogi.albatross.db.server.entity.UserSession;
 import com.yogi.albatross.db.user.dao.UserDao;
 import com.yogi.albatross.db.user.dto.UserDto;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import org.apache.commons.lang3.math.NumberUtils;
 
 @Processor(targetType = FixedHeadType.CONNECT)
 public class ConnectDecoder extends DecoderAdapter {
     private UserDao dao;
-    private ServerDao serverDao;
+    private UserSessionDao serverDao;
 
     public ConnectDecoder() {
         dao= DaoManager.getDao(UserDao.class);
-        serverDao=DaoManager.getDao(ServerDao.class);
+        serverDao=DaoManager.getDao(UserSessionDao.class);
     }
 
     @Override
@@ -55,14 +58,14 @@ public class ConnectDecoder extends DecoderAdapter {
             connectRequest.setClearSession(false);
         }
         if((flags & 0x04)!=0){//Will Flag
-            connectRequest.setWillFlag(true);
+            connectRequest.setWillFlag(NumberUtils.INTEGER_ONE);
             int willQos=flags & 0x18;
             if(willQos>2){//willQos must be {0,1,2}。
                 throw  new Exception("willQos flag error");
             }
             connectRequest.setWillQos(WillQos.valueOf(willQos));
         }else {
-            connectRequest.setWillFlag(false);
+            connectRequest.setWillFlag(NumberUtils.INTEGER_ZERO);
             int willQos=flags & 0x18;
             if(willQos!=0){//willQos must be {0}。
                 throw  new Exception("willQos flag error");
@@ -70,10 +73,10 @@ public class ConnectDecoder extends DecoderAdapter {
             connectRequest.setWillQos(WillQos.valueOf(willQos));
         }
         if((flags & 0x20)==0){//Will Retain
-            connectRequest.setWillRetain(false);
+            connectRequest.setWillRetain(NumberUtils.INTEGER_ZERO);
             //TODO 服务端必须将遗嘱消息当作非保留消息发布
         }else{
-            connectRequest.setWillRetain(true);
+            connectRequest.setWillRetain(NumberUtils.INTEGER_ONE);
             //TODO 服务端必须将遗嘱消息当作保留消息发布
         }
         int usernameFlag=flags & 0x80;
@@ -110,7 +113,7 @@ public class ConnectDecoder extends DecoderAdapter {
         //client id
         connectRequest.setClientId(readUTF(byteBuf));
 
-        if(connectRequest.getWillFlag()){
+        if(connectRequest.getWillFlag()==NumberUtils.INTEGER_ONE){
             connectRequest.setWillTopic(readUTF(byteBuf));
             connectRequest.setWillTopic(readUTF(byteBuf));
         }
@@ -137,18 +140,19 @@ public class ConnectDecoder extends DecoderAdapter {
                 bs[3]=cr.getAck().getCode();
             }else {
                 boolean usernameOrPsw=false;
-                UserDto dto = dao.selectByUsername(cr.getUsername());
-                if(dto!=null && dto.getPassword().equals(cr.getPassword())){
+                UserDto userDto = dao.selectByUsername(cr.getUsername());
+                if(userDto!=null && userDto.getPassword().equals(cr.getPassword())){
                     dao.updateLastLoginTime(cr.getUsername());
 
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
-                    boolean createSession=cr.getClearSession();
-                    if(!createSession){//没有设置清除session，则尝试恢复session
-                        createSession=!recoverySession(ctx,dto.getId());
-                    }
-                    if(createSession){//创建session
-                        createSession(ctx,cr);
+                    if(!cr.getClearSession()){//没有设置清除session，则尝试恢复session
+                        boolean isSuccess = recoverySession(ctx, userDto.getId());
+                        if(!isSuccess){
+                            createSession(ctx,cr,userDto.getId());
+                        }
+                    }else {//不清楚session则意味着需要保存session
+                        serverDao.saveSession(createSession(ctx, cr, userDto.getId()));
                     }
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
@@ -171,16 +175,26 @@ public class ConnectDecoder extends DecoderAdapter {
      * @param ctx
      * @param request
      */
-    private void createSession(ChannelHandlerContext ctx, ConnectRequest request){
+    private UserSession createSession(ChannelHandlerContext ctx, ConnectRequest request,Long userId){
         Channel channel=ctx.channel();
         String channelId=channel.id().asLongText();
         ServerSessionProto.ServerSession.Builder builder = ServerSessionProto.ServerSession.newBuilder();
         builder.setUserId(request.getUsername());
         builder.setChannelId(request.getUsername());
         builder.setKeepLiveSecond(request.getKeepLiveSecond()*1000);
+        builder.setWillQos(request.getWillQos().getCode());
+        builder.setWillFalg(request.getWillFlag());
+        builder.setWillRetain(request.getWillRetain());
         ServerSessionProto.ServerSession serverSession=builder.build();
         Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
         attr.set(serverSession);
+
+        UserSession userSession=new UserSession();
+        userSession.setUserId(userId);
+        userSession.setServerSession(serverSession);
+        userSession.setWillMessage(request.getWillMessage());
+        userSession.setWillTopic(request.getWillTopic());
+        return userSession;
     }
 
     /**
@@ -189,12 +203,12 @@ public class ConnectDecoder extends DecoderAdapter {
      * @param userId
      */
     private boolean recoverySession(ChannelHandlerContext ctx,Long userId){
-        ServerSessionProto.ServerSession serverSession=serverDao.getSessionFromDb(userId);
-        if(serverSession!=null){
+        UserSession userSession=serverDao.getSessionFromDb(userId);
+        if(userSession!=null){
             Channel channel=ctx.channel();
             String channelId=channel.id().asLongText();
             Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
-            attr.set(serverSession);
+            attr.set(userSession.getServerSession());
             return true;
         }
         return false;
@@ -205,8 +219,8 @@ public class ConnectDecoder extends DecoderAdapter {
      *  清楚session
      * @param ctx
      */
-    private void clearSession(ChannelHandlerContext ctx){
-        Channel channel=ctx.channel();
+    private void clearSession(AbstractMqttChannelHandlerContext ctx){
+        MqttChannel channel=ctx.channel();
         String channelId=channel.id().asLongText();
         ChannelTimeHolder.remove(channelId);
 

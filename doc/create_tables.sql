@@ -34,3 +34,15 @@ CREATE TABLE `subscribe` (
     `lastUpdateTime` timestamp NUll DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     INDEX `topicName` USING BTREE (`topicName`(128) ASC))ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订阅表';
+
+CREATE TABLE `user_session` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` bigint(20) NOT NULL,
+  `serverSession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `willTopic` varchar(500) DEFAULT NULL,
+  `willMessage` varchar(2000) DEFAULT NULL,
+  `createTime` datetime NOT NULL,
+  `lastUpdateTime` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_USERID` (`userId`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户的session表'
