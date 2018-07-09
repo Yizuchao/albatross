@@ -24,9 +24,13 @@ public abstract class AbstractMqttChannelHandlerContext {
     public ChannelFuture close() {
         UserSession userSession = channel.getUserSession();
         if (userSession != null) {
+            boolean saveSession = !userSession.getServerSession().getClearSession();
+            if (saveSession) {
+                userSessionDao.saveOrUpdateSession(userSession);
+            }
             if (userSession.getServerSession().getWillFalg() == NumberUtils.INTEGER_ONE) {
                 //TODO publish will  message
-                if(userSession.getServerSession().getWillRetain()!=NumberUtils.INTEGER_ONE){//not specify to retain will,then clear will
+                if (!saveSession && userSession.getServerSession().getWillRetain() != NumberUtils.INTEGER_ONE) {//not specify to retain will,then clear will
                     clearWill(userSession);
                 }
             }
@@ -42,7 +46,7 @@ public abstract class AbstractMqttChannelHandlerContext {
         return ctx.pipeline();
     }
 
-    private boolean clearWill(UserSession userSession){
+    private boolean clearWill(UserSession userSession) {
         userSession.setWillTopic(null);
         userSession.setWillMessage(null);
         userSessionDao.clearWill(userSession.getUserId());
