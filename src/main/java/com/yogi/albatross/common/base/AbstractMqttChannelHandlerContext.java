@@ -1,33 +1,34 @@
 package com.yogi.albatross.common.base;
 
 
-import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.server.dao.UserSessionDao;
+import com.yogi.albatross.db.server.entity.UserSession;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public abstract class AbstractMqttChannelHandlerContext {
-    protected final ChannelHandlerContext ctx;
-    protected final MqttChannel channel;
+    private final ChannelHandlerContext ctx;
+    private final MqttChannel channel;
     private UserSessionDao userSessionDao;
 
-    public AbstractMqttChannelHandlerContext(ChannelHandlerContext ctx) {
+    protected AbstractMqttChannelHandlerContext(ChannelHandlerContext ctx) {
         this.ctx = ctx;
         this.channel = new MqttChannel(ctx.channel());
         this.userSessionDao = DaoManager.getDao(UserSessionDao.class);
+
     }
 
     public ChannelFuture close() {
-        ServerSessionProto.ServerSession serverSession = channel.getServerSession();
-        if (serverSession != null) {
-            if (serverSession.getWillFalg() == NumberUtils.INTEGER_ONE) {
+        UserSession userSession = channel.getUserSession();
+        if (userSession != null) {
+            if (userSession.getServerSession().getWillFalg() == NumberUtils.INTEGER_ONE) {
                 //TODO publish will  message
-            }
-            if (serverSession.getWillRetain() != NumberUtils.INTEGER_ONE) {
-                userSessionDao.clearWill(Long.parseLong(serverSession.getUserId()));
+                if(userSession.getServerSession().getWillRetain()!=NumberUtils.INTEGER_ONE){//not specify to retain will,then clear will
+                    clearWill(userSession);
+                }
             }
         }
         return ctx.close();
@@ -39,5 +40,12 @@ public abstract class AbstractMqttChannelHandlerContext {
 
     public ChannelPipeline pipeline() {
         return ctx.pipeline();
+    }
+
+    private boolean clearWill(UserSession userSession){
+        userSession.setWillTopic(null);
+        userSession.setWillMessage(null);
+        userSessionDao.clearWill(userSession.getUserId());
+        return true;
     }
 }

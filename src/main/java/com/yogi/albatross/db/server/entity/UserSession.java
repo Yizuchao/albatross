@@ -1,7 +1,6 @@
 package com.yogi.albatross.db.server.entity;
 
 import com.yogi.albatross.common.server.ServerSessionProto;
-import com.yogi.albatross.request.ConnectRequest;
 
 import java.util.Date;
 

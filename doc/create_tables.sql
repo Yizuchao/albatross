@@ -45,4 +45,5 @@ CREATE TABLE `user_session` (
   `lastUpdateTime` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_USERID` (`userId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户的session表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户的session表';
+ALTER TABLE `user_session`  DROP INDEX `IDX_USERID`,ADD UNIQUE INDEX `IDX_USERID`(`userId`) USING BTREE;

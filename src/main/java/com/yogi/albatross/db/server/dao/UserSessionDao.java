@@ -3,6 +3,7 @@ package com.yogi.albatross.db.server.dao;
 import com.yogi.albatross.annotation.Dao;
 import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
 import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.DbUtils;
 import com.yogi.albatross.utils.MD5Utils;
 import com.yogi.albatross.utils.SqlUtils;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 保存服务器的运行信息
@@ -18,14 +20,30 @@ import java.util.Date;
 @Dao
 public class UserSessionDao {
     private static final String SAVE_SQL="insert into server_session(userId,serverSession,willTopic,willMessage,createTime,lastUpdateTime) values (?,?,?,?,?,?)";
+    private static final String SAVE_WILL="insert into server_session(userId,willTopic,willMessage,createTime,lastUpdateTime) values(?,?,?,?,?)";
     private static final String SELECT_BY_USERID="select * from server_session where userId=?";
     private static final String CLEAR_WILL="update server_session set willTopic=null,willMessage=null,lastUpdateTime=? where userId=?";
     public Integer saveSession(UserSession userSession){
         try {
             Date now=new Date();
-            DbUtils.insert(SAVE_SQL,userSession.getUserId(),userSession.getServerSession(),userSession.getWillTopic(),userSession.getWillMessage(),now,now);
-            return NumberUtils.INTEGER_ONE;
+            List<Integer> ids =DbUtils.insert(SAVE_SQL,userSession.getUserId(),userSession.getServerSession(),userSession.getWillTopic(),userSession.getWillMessage(),now,now);
+            if(!CollectionUtils.isEmpty(ids)){
+                return ids.get(NumberUtils.INTEGER_ZERO);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return NumberUtils.INTEGER_ZERO;
+    }
+
+    public Integer saveWill(Long userId,String willTopic,String willMessage){
+        try{
+            Date now=new Date();
+            List<Integer> ids = DbUtils.insert(SAVE_SQL, userId, willTopic, willMessage, now, now);
+            if(!CollectionUtils.isEmpty(ids)){
+                return ids.get(NumberUtils.INTEGER_ZERO);
+            }
+        }catch (Exception e){
             e.printStackTrace();
         }
         return NumberUtils.INTEGER_ZERO;

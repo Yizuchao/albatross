@@ -41,11 +41,11 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
 
                 IDecoder decoder=processors.get(FixedHeadType.valueOf(headCode));
                 if(decoder==null){//不合法或者不支持的报文
-                    ctx.close();
+                    simpleEncapPacket.getCtx().close();
                 }
                 BaseRequest request = decoder.process(simpleEncapPacket);
 
-                byte[] bytes=decoder.response(ctx,request);
+                byte[] bytes=decoder.response(simpleEncapPacket.getCtx(),request);
                 if(bytes!=null && bytes.length>0){//立即返回响应报文
                     ByteBuf buffer=ctx.alloc().directBuffer();
                     buffer.writeBytes(bytes);
