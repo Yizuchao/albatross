@@ -52,4 +52,7 @@ public abstract class AbstractMqttChannelHandlerContext {
         userSessionDao.clearWill(userSession.getUserId());
         return true;
     }
+    public ChannelFuture writeAndFlush(Object msg){
+        return ctx.writeAndFlush(msg);
+    }
 }

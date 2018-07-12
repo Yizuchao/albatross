@@ -18,8 +18,6 @@ import com.yogi.albatross.db.user.dto.UserDto;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
@@ -156,16 +154,16 @@ public class ConnectDecoder extends DecoderAdapter {
 
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
-                    //create or recovery session
-                    boolean createSession=!cr.getClearSession();
-                    if(!createSession){//没有设置清除session，则尝试恢复session
-                        createSession=!recoverySession(ctx, userDto.getId());
+                    //create or recovery sessionserver_session
+                    boolean hasRecovery=false;
+                    if(!cr.getClearSession()){//没有设置清除session，则尝试恢复session
+                        hasRecovery=recoverySession(ctx, userDto.getId());
                     }
-                    if(createSession){
+                    if(cr.getClearSession() || !hasRecovery){
                         createSession(ctx,cr,userDto.getId());
                     }
                     //persist will
-                    Integer sessionId = serverDao.saveWill(userDto.getId(), cr.getWillTopic(), cr.getWillMessage());
+                    Integer sessionId = serverDao.saveOrUpdateWill(userDto.getId(), cr.getWillTopic(), cr.getWillMessage());
                     ctx.channel().getUserSession().setId(sessionId);
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();

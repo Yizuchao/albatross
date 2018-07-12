@@ -15,7 +15,7 @@ public class SimpleEncapPacket {
     private ByteBuf byteBuf;//surplus byteBuf
 
     public SimpleEncapPacket(ChannelHandlerContext ctx,ByteBuf byteBuf, List<Object> out) {
-        this.ctx = new MqttChannelHandlerContext(ctx);
+        this.ctx = MqttChannelHandlerContext.wrapper(ctx);
         this.out = out;
         this.byteBuf = byteBuf;
     }

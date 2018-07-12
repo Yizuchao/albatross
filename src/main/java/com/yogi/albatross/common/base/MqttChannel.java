@@ -1,6 +1,5 @@
 package com.yogi.albatross.common.base;
 
-import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.db.server.entity.UserSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
@@ -12,18 +11,15 @@ import io.netty.util.AttributeKey;
  */
 public class MqttChannel {
     private Channel parent;
-    private UserSession userSession;
     public MqttChannel(Channel parent) {
         this.parent = parent;
     }
 
     public UserSession getUserSession() {
-        return userSession;
+        Attribute<UserSession> attr = parent.attr(AttributeKey.valueOf(this.id().asLongText()));
+        return attr.get();
     }
 
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
 
     public ChannelId id(){
         return parent.id();

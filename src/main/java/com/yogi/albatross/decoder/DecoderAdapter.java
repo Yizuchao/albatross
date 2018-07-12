@@ -1,6 +1,7 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.db.server.entity.UserSession;
 import com.yogi.albatross.request.BaseRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -42,11 +43,11 @@ public abstract class DecoderAdapter implements IDecoder {
         return bytes;
     }
 
-    protected String currentUser(ChannelHandlerContext ctx){
+    protected Long currentUser(ChannelHandlerContext ctx){
         return getSession(ctx).getUserId();
     }
 
-    protected ServerSession getSession(ChannelHandlerContext ctx){
-        return (ServerSession) ctx.channel().attr(AttributeKey.valueOf(ctx.channel().id().asLongText())).get();
+    protected UserSession getSession(ChannelHandlerContext ctx){
+        return (UserSession) ctx.channel().attr(AttributeKey.valueOf(ctx.channel().id().asLongText())).get();
     }
 }

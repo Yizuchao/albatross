@@ -38,7 +38,7 @@ CREATE TABLE `subscribe` (
 CREATE TABLE `user_session` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` bigint(20) NOT NULL,
-  `serverSession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `serverSession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL,
   `willTopic` varchar(500) DEFAULT NULL,
   `willMessage` varchar(2000) DEFAULT NULL,
   `createTime` datetime NOT NULL,

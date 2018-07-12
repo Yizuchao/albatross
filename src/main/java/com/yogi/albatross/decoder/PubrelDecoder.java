@@ -1,6 +1,7 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
+import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
@@ -20,7 +21,7 @@ public class PubrelDecoder extends DecoderAdapter{
     }
 
     @Override
-    public byte[] response(ChannelHandlerContext ctx, BaseRequest request) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
         PubrelRequest pubrelRequest=(PubrelRequest)request;
         byte[] bytes=new byte[4];
         bytes[0]=0x40;

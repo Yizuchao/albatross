@@ -2,6 +2,7 @@ package com.yogi.albatross.decoder;
 
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
+import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.db.DaoManager;
@@ -40,7 +41,7 @@ public class SubscribeDecoder extends DecoderAdapter {
     }
 
     @Override
-    public byte[] response(ChannelHandlerContext ctx, BaseRequest request) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
         SubscribeRequest subscribeRequest=(SubscribeRequest)request;
         //if(topicDao.saveOrSubscribe(subscribeRequest.getTopics(),Integer.parseInt(currentUser(ctx)),SubscribeRequest.getTopics());
 

@@ -2,6 +2,7 @@ package com.yogi.albatross.decoder;
 
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
+import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
@@ -26,7 +27,7 @@ public class UnsubscribeDecoder extends DecoderAdapter{
     }
 
     @Override
-    public byte[] response(ChannelHandlerContext ctx, BaseRequest request) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
         UnsubscribeRequest unsubscribeRequest=(UnsubscribeRequest)request;
         //TODO 它必须停止分发任何新消息给这个客户端
         //它必须完成分发任何已经开始往客户端发送的QoS 1和QoS 2的消息

@@ -11,6 +11,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,11 @@ public class Starter {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline=socketChannel.pipeline();
 
-                    pipeline.addLast(new ServerIdleStateHandler());
                     //ChannelOutboundHandler 在注册的时候需要放在最后一个ChannelInboundHandler之前，否则将无法传递到ChannelOutboundHandler。
                     pipeline.addLast(new MqttDispatchDecoder());//mqtt decoder
                     //ChannelInboundHandler之间的传递，通过调用 ctx.fireChannelRead(msg) 实现；
+                    pipeline.addLast(new IdleStateHandler(30,30,30));
+                    pipeline.addLast(new ServerIdleStateHandler());
                 }
             });
             ChannelFuture future = bootstrap.channel(NioServerSocketChannel.class).bind();
