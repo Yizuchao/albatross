@@ -116,4 +116,8 @@ public class MQTTUtils {
         }
         throw new Exception("length too long ");
     }
+
+    public static boolean validQos(int qos){
+        return qos==0 || qos==1 || qos==2;
+    }
 }

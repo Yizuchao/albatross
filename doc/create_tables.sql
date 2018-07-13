@@ -21,7 +21,7 @@ CREATE TABLE `topic` (
     `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `lastUpdateTime` timestamp NUll DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `name` USING BTREE (`name` ASC))ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='主题表';
+    UNIQUE INDEX `name`(`name` ASC) USING BTREE)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='主题表';
 
 /**订阅表**/
 CREATE TABLE `subscribe` (

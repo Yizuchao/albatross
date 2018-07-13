@@ -1,11 +1,13 @@
 package com.yogi.albatross.request;
 
+import com.yogi.albatross.constants.common.SubscribeQos;
+
 import java.util.List;
 
 public class SubscribeRequest extends BaseRequest{
     private int packetId;
     private List<String> topics;
-    private List<Integer> qos;
+    private List<SubscribeQos> qos;
 
     public int getPacketId() {
         return packetId;
@@ -23,11 +25,11 @@ public class SubscribeRequest extends BaseRequest{
         this.topics = topics;
     }
 
-    public List<Integer> getQos() {
+    public List<SubscribeQos> getQos() {
         return qos;
     }
 
-    public void setQos(List<Integer> qos) {
+    public void setQos(List<SubscribeQos> qos) {
         this.qos = qos;
     }
 }

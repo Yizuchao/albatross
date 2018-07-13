@@ -13,6 +13,7 @@ import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.server.dao.UserSessionDao;
 import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.db.topic.dao.TopicDao;
 import com.yogi.albatross.db.user.dao.UserDao;
 import com.yogi.albatross.db.user.dto.UserDto;
 import com.yogi.albatross.request.BaseRequest;
@@ -28,10 +29,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class ConnectDecoder extends DecoderAdapter {
     private UserDao dao;
     private UserSessionDao serverDao;
+    private TopicDao topicDao;
 
     public ConnectDecoder() {
         dao= DaoManager.getDao(UserDao.class);
         serverDao=DaoManager.getDao(UserSessionDao.class);
+        topicDao=DaoManager.getDao(TopicDao.class);
     }
 
     @Override
@@ -165,6 +168,8 @@ public class ConnectDecoder extends DecoderAdapter {
                     //persist will
                     Integer sessionId = serverDao.saveOrUpdateWill(userDto.getId(), cr.getWillTopic(), cr.getWillMessage());
                     ctx.channel().getUserSession().setId(sessionId);
+                    //cache subscribe
+                    ctx.channel().setNewest100Topics(topicDao.get100Newest(userDto.getId()));
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
                 }
