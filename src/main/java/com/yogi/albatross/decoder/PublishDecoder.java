@@ -12,10 +12,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.Objects;
+
 @Processor(targetType = FixedHeadType.PUBLISH)
-public class PublishDecoder extends DecoderAdapter{
+public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     @Override
-    protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected PublishRequest process0(SimpleEncapPacket packet) throws Exception {
         PublishRequest request=new PublishRequest();
         byte headByte=packet.getHeadByte();
         PublishQos qos=PublishQos.valueOf(headByte & 0x06);
@@ -51,35 +53,34 @@ public class PublishDecoder extends DecoderAdapter{
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
-        if(request!=null){
-            PublishRequest publishRequest=(PublishRequest)request;
-            switch (publishRequest.getQos()){
-                case ZERO:{
-                    return null;
-                }
-                case ONE:{
-                    byte[] bytes=new byte[4];
-                    bytes[0]=0x40;
-                    bytes[1]=0x02;
-                    bytes[2]=(byte)((publishRequest.getPacketId() &0xff00)>>8);//取高8位
-                    bytes[3]=(byte)(publishRequest.getPacketId() &0x00ff);//取低8位
-                    ThreadPoolUtils.execute(()->{
-                        //TODO action 服务端使用PUBLISH报文发送应用消息给每一个订阅匹配的客户端
-                        ctx.writeAndFlush(bytes);
-                    });
-                    return null;
-                }
-                case TWO:{
-                    byte[] bytes=new byte[4];
-                    bytes[0]=0x50;
-                    bytes[1]=0x02;
-                    bytes[2]=(byte)((publishRequest.getPacketId() &0xff00)>>8);//取高8位
-                    bytes[3]=(byte)(publishRequest.getPacketId() &0x00ff);//取低8位
-                    return bytes;//返回"发布收到"报文
-                }
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, PublishRequest publishRequest) throws Exception {
+        if(Objects.isNull(publishRequest)){
+            return null;
+        }
+        switch (publishRequest.getQos()){
+            case ZERO:{
+                return null;
             }
-
+            case ONE:{
+                byte[] bytes=new byte[4];
+                bytes[0]=0x40;
+                bytes[1]=0x02;
+                bytes[2]=(byte)((publishRequest.getPacketId() &0xff00)>>8);//取高8位
+                bytes[3]=(byte)(publishRequest.getPacketId() &0x00ff);//取低8位
+                ThreadPoolUtils.execute(()->{
+                    //TODO action 服务端使用PUBLISH报文发送应用消息给每一个订阅匹配的客户端
+                    ctx.writeAndFlush(bytes);
+                });
+                return null;
+            }
+            case TWO:{
+                byte[] bytes=new byte[4];
+                bytes[0]=0x50;
+                bytes[1]=0x02;
+                bytes[2]=(byte)((publishRequest.getPacketId() &0xff00)>>8);//取高8位
+                bytes[3]=(byte)(publishRequest.getPacketId() &0x00ff);//取低8位
+                return bytes;//返回"发布收到"报文
+            }
         }
         return null;
     }

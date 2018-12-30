@@ -12,17 +12,16 @@ import io.netty.channel.ChannelHandlerContext;
  * “发布释放”报文处理类
  */
 @Processor(targetType = FixedHeadType.PUBREL)
-public class PubrelDecoder extends DecoderAdapter{
+public class PubrelDecoder extends DecoderAdapter<PubrelRequest>{
     @Override
-    protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected PubrelRequest process0(SimpleEncapPacket packet) throws Exception {
         PubrelRequest request=new PubrelRequest();
         request.setPacketId(packet.getByteBuf().readUnsignedShort());
         return request;
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
-        PubrelRequest pubrelRequest=(PubrelRequest)request;
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, PubrelRequest pubrelRequest) throws Exception {
         byte[] bytes=new byte[4];
         bytes[0]=0x40;
         bytes[1]=0x02;

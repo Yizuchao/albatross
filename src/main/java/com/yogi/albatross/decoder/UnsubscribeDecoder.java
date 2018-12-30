@@ -12,10 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.List;
 
 @Processor(targetType = FixedHeadType.UNSUBSCRIBE)
-public class UnsubscribeDecoder extends DecoderAdapter{
+public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeRequest>{
 
     @Override
-    protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected UnsubscribeRequest process0(SimpleEncapPacket packet) throws Exception {
         UnsubscribeRequest unsubscribeRequest=new UnsubscribeRequest();
         unsubscribeRequest.setPacketId(packet.getByteBuf().readUnsignedShort());
         List<String> topics= Lists.newArrayListWithExpectedSize(5);
@@ -27,8 +27,7 @@ public class UnsubscribeDecoder extends DecoderAdapter{
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
-        UnsubscribeRequest unsubscribeRequest=(UnsubscribeRequest)request;
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, UnsubscribeRequest unsubscribeRequest) throws Exception {
         //TODO 它必须停止分发任何新消息给这个客户端
         //它必须完成分发任何已经开始往客户端发送的QoS 1和QoS 2的消息
         //它可以继续发送任何现存的准备分发给客户端的缓存消息

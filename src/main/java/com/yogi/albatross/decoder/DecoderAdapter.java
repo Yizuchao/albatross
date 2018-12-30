@@ -9,10 +9,10 @@ import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
 
-public abstract class DecoderAdapter implements IDecoder {
+public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<T> {
 
     @Override
-    public BaseRequest process(SimpleEncapPacket packet) throws Exception {
+    public T process(SimpleEncapPacket packet) throws Exception {
         try{
             return process0(packet);
         }catch (Exception e){
@@ -27,7 +27,7 @@ public abstract class DecoderAdapter implements IDecoder {
             }
         }
     }
-    protected abstract BaseRequest process0(SimpleEncapPacket packet) throws Exception;
+    protected abstract T process0(SimpleEncapPacket packet) throws Exception;
 
     protected String readUTF(ByteBuf byteBuf, int len){
         return new String(readBytes(byteBuf,len), CharsetUtil.UTF_8);

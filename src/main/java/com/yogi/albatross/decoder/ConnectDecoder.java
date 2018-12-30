@@ -231,7 +231,7 @@ public class ConnectDecoder extends DecoderAdapter {
 
 
     /**
-     *  清楚session
+     *   清除session
      * @param ctx
      */
     private void clearSession(AbstractMqttChannelHandlerContext ctx){

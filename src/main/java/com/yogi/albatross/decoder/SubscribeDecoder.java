@@ -19,7 +19,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.List;
 
 @Processor(targetType = FixedHeadType.SUBSCRIBE)
-public class SubscribeDecoder extends DecoderAdapter {
+public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
     private TopicDao topicDao;
 
     public SubscribeDecoder() {
@@ -27,7 +27,7 @@ public class SubscribeDecoder extends DecoderAdapter {
     }
 
     @Override
-    protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected SubscribeRequest process0(SimpleEncapPacket packet) throws Exception {
         ByteBuf byteBuf=packet.getByteBuf();
         SubscribeRequest request = new SubscribeRequest();
         request.setPacketId(byteBuf.readUnsignedShort());
@@ -52,8 +52,7 @@ public class SubscribeDecoder extends DecoderAdapter {
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
-        SubscribeRequest subscribeRequest=(SubscribeRequest)request;
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, SubscribeRequest subscribeRequest) throws Exception {
         boolean saveSuccess=topicDao.saveOrSubscribe(subscribeRequest.getTopics(),ctx.getCurrentUserId(),subscribeRequest.getQos());
 
         //response bytes
