@@ -10,4 +10,5 @@ message Message{
     }
     Type type=3;//队列消息或者主题消息
     bytes content=4;
+    string from=5;//来源
 }

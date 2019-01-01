@@ -2,13 +2,15 @@ package com.yogi.albatross.request;
 
 import com.yogi.albatross.constants.common.PublishQos;
 
+import java.util.Objects;
+
 public class PublishRequest extends BaseRequest{
     private int dup;
     private PublishQos qos;
     private int retain;
     private String topicName;
     private int packetId;
-    private String payload;
+    private byte[] payload;
 
     public int getDup() {
         return dup;
@@ -50,11 +52,15 @@ public class PublishRequest extends BaseRequest{
         this.packetId = packetId;
     }
 
-    public String getPayload() {
+    public byte[] getPayload() {
         return payload;
     }
 
-    public void setPayload(String payload) {
+    public void setPayload(byte[] payload) {
         this.payload = payload;
+    }
+
+    public boolean isPayloadEmpty(){
+        return Objects.isNull(payload) || payload.length==0;
     }
 }

@@ -58,6 +58,24 @@ public final class MessageProto {
      * <code>bytes content = 4;</code>
      */
     com.google.protobuf.ByteString getContent();
+
+    /**
+     * <pre>
+     *来源
+     * </pre>
+     *
+     * <code>string from = 5;</code>
+     */
+    java.lang.String getFrom();
+    /**
+     * <pre>
+     *来源
+     * </pre>
+     *
+     * <code>string from = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getFromBytes();
   }
   /**
    * Protobuf type {@code Message}
@@ -76,6 +94,7 @@ public final class MessageProto {
       to_ = 0;
       type_ = 0;
       content_ = com.google.protobuf.ByteString.EMPTY;
+      from_ = "";
     }
 
     @java.lang.Override
@@ -129,6 +148,12 @@ public final class MessageProto {
             case 34: {
 
               content_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              from_ = s;
               break;
             }
           }
@@ -333,6 +358,48 @@ public final class MessageProto {
       return content_;
     }
 
+    public static final int FROM_FIELD_NUMBER = 5;
+    private volatile java.lang.Object from_;
+    /**
+     * <pre>
+     *来源
+     * </pre>
+     *
+     * <code>string from = 5;</code>
+     */
+    public java.lang.String getFrom() {
+      java.lang.Object ref = from_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        from_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *来源
+     * </pre>
+     *
+     * <code>string from = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFromBytes() {
+      java.lang.Object ref = from_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        from_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -357,6 +424,9 @@ public final class MessageProto {
       if (!content_.isEmpty()) {
         output.writeBytes(4, content_);
       }
+      if (!getFromBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, from_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -379,6 +449,9 @@ public final class MessageProto {
       if (!content_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, content_);
+      }
+      if (!getFromBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, from_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -403,6 +476,8 @@ public final class MessageProto {
       result = result && type_ == other.type_;
       result = result && getContent()
           .equals(other.getContent());
+      result = result && getFrom()
+          .equals(other.getFrom());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -422,6 +497,8 @@ public final class MessageProto {
       hash = (53 * hash) + type_;
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
+      hash = (37 * hash) + FROM_FIELD_NUMBER;
+      hash = (53 * hash) + getFrom().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -559,6 +636,8 @@ public final class MessageProto {
 
         content_ = com.google.protobuf.ByteString.EMPTY;
 
+        from_ = "";
+
         return this;
       }
 
@@ -585,6 +664,7 @@ public final class MessageProto {
         result.to_ = to_;
         result.type_ = type_;
         result.content_ = content_;
+        result.from_ = from_;
         onBuilt();
         return result;
       }
@@ -638,6 +718,10 @@ public final class MessageProto {
         }
         if (other.getContent() != com.google.protobuf.ByteString.EMPTY) {
           setContent(other.getContent());
+        }
+        if (!other.getFrom().isEmpty()) {
+          from_ = other.from_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -865,6 +949,95 @@ public final class MessageProto {
         onChanged();
         return this;
       }
+
+      private java.lang.Object from_ = "";
+      /**
+       * <pre>
+       *来源
+       * </pre>
+       *
+       * <code>string from = 5;</code>
+       */
+      public java.lang.String getFrom() {
+        java.lang.Object ref = from_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          from_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *来源
+       * </pre>
+       *
+       * <code>string from = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFromBytes() {
+        java.lang.Object ref = from_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          from_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *来源
+       * </pre>
+       *
+       * <code>string from = 5;</code>
+       */
+      public Builder setFrom(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        from_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *来源
+       * </pre>
+       *
+       * <code>string from = 5;</code>
+       */
+      public Builder clearFrom() {
+        
+        from_ = getDefaultInstance().getFrom();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *来源
+       * </pre>
+       *
+       * <code>string from = 5;</code>
+       */
+      public Builder setFromBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        from_ = value;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
@@ -928,11 +1101,12 @@ public final class MessageProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rmessage.proto\"t\n\007Message\022\021\n\tmessageId\030" +
-      "\001 \001(\t\022\n\n\002to\030\002 \001(\005\022\033\n\004type\030\003 \001(\0162\r.Messag" +
-      "e.Type\022\017\n\007content\030\004 \001(\014\"\034\n\004Type\022\t\n\005QUEUE" +
-      "\020\000\022\t\n\005TOPIC\020\001B0\n com.yogi.albatross.comm" +
-      "on.serverB\014MessageProtob\006proto3"
+      "\n\rmessage.proto\"\202\001\n\007Message\022\021\n\tmessageId" +
+      "\030\001 \001(\t\022\n\n\002to\030\002 \001(\005\022\033\n\004type\030\003 \001(\0162\r.Messa" +
+      "ge.Type\022\017\n\007content\030\004 \001(\014\022\014\n\004from\030\005 \001(\t\"\034" +
+      "\n\004Type\022\t\n\005QUEUE\020\000\022\t\n\005TOPIC\020\001B0\n com.yogi" +
+      ".albatross.common.serverB\014MessageProtob\006" +
+      "proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -951,7 +1125,7 @@ public final class MessageProto {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "MessageId", "To", "Type", "Content", });
+        new java.lang.String[] { "MessageId", "To", "Type", "Content", "From", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

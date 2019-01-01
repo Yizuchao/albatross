@@ -4,6 +4,7 @@ import com.yogi.albatross.db.server.entity.UserSession;
 import com.yogi.albatross.db.topic.dto.SubscribeDto;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
@@ -13,7 +14,7 @@ import java.util.Objects;
 /**
  *
  */
-public class MqttChannel {
+public final class MqttChannel {
     private Channel parent;
     private List<SubscribeDto> newest100Topics;
     public MqttChannel(Channel parent) {
@@ -33,6 +34,13 @@ public class MqttChannel {
         return attr.get();
     }
 
+    public void writeAndFlush(Object o, ChannelPromise promise){
+        parent.writeAndFlush(o,promise);
+    }
+
+    public void writeAndFlush(Object o){
+        parent.writeAndFlush(o);
+    }
 
     public ChannelId id(){
         return parent.id();
@@ -48,5 +56,8 @@ public class MqttChannel {
             return userSession.getUserId();
         }
         return null;
+    }
+    protected Channel channel(){
+        return parent;
     }
 }

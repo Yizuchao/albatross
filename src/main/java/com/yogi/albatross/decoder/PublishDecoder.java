@@ -1,17 +1,30 @@
 package com.yogi.albatross.decoder;
 
+import com.google.protobuf.ByteString;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.base.MqttChannel;
+import com.yogi.albatross.common.base.SendMsgSuccessChannelPromise;
+import com.yogi.albatross.common.server.MessageProto;
+import com.yogi.albatross.common.server.ServerTopics;
 import com.yogi.albatross.constants.common.PublishQos;
 import com.yogi.albatross.constants.head.FixedHeadType;
 import com.yogi.albatross.constants.packet.SimpleEncapPacket;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.PublishRequest;
+import com.yogi.albatross.utils.CollectionUtils;
+import com.yogi.albatross.utils.MessageIdGenerateUtils;
 import com.yogi.albatross.utils.ThreadPoolUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelPromise;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Processor(targetType = FixedHeadType.PUBLISH)
@@ -30,25 +43,16 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
 
         int retain=headByte & 0x01;
         request.setRetain(retain);
-        if(retain==NumberUtils.INTEGER_ONE){//TODO 保留标志为1且有效载荷为零字节的PUBLISH报文会被服务端当作正常消息处理
-
-        }
-        if(retain==NumberUtils.INTEGER_ZERO){//TODO 如果客户端发给服务端的PUBLISH报文的保留标志位0，服务端不能存储这个消息也不能移除或替换任何现存的保留消息
-
-        }
-
         ByteBuf byteBuf=packet.getByteBuf();
         int topicNameLen=byteBuf.readUnsignedShort();
         request.setTopicName(readUTF(byteBuf,topicNameLen));
-
         int packtIdLen= NumberUtils.INTEGER_ONE;
         if(PublishQos.ONE.equals(qos)|| PublishQos.TWO.equals(qos)){
             packtIdLen=byteBuf.readUnsignedShort();
             request.setPacketId(packtIdLen);
         }
         //固定报头中的剩余长度字段的值减去可变报头的长度
-        String payload=readUTF(byteBuf,packet.getLen()-topicNameLen-packtIdLen);
-        request.setPayload(payload);
+        request.setPayload(readBytes(byteBuf,packet.getLen()-topicNameLen-packtIdLen));
         return request;
     }
 
@@ -56,6 +60,13 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     public byte[] response(AbstractMqttChannelHandlerContext ctx, PublishRequest publishRequest) throws Exception {
         if(Objects.isNull(publishRequest)){
             return null;
+        }
+        if(NumberUtils.INTEGER_ONE.equals(publishRequest.getRetain()) && (publishRequest.isPayloadEmpty()
+               || PublishQos.ZERO.equals(publishRequest.getQos()))){
+            clearTopicRetainMsg();
+        }
+        if(NumberUtils.INTEGER_ONE.equals(publishRequest.getRetain()) && PublishQos.ZERO.equals(publishRequest.getQos())){
+            saveTopicRetainMsg();
         }
         switch (publishRequest.getQos()){
             case ZERO:{
@@ -67,9 +78,10 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
                 bytes[1]=0x02;
                 bytes[2]=(byte)((publishRequest.getPacketId() &0xff00)>>8);//取高8位
                 bytes[3]=(byte)(publishRequest.getPacketId() &0x00ff);//取低8位
+                MessageProto.Message message = getMessage(publishRequest, true, String.valueOf(ctx.getCurrentUserId()));
                 ThreadPoolUtils.execute(()->{
-                    //TODO action 服务端使用PUBLISH报文发送应用消息给每一个订阅匹配的客户端
-                    ctx.writeAndFlush(bytes);
+                    //TODO 持久化消息
+                    sendMsg(publishRequest.getTopicName(),Arrays.asList(message),new SendMsgSuccessChannelPromise(ctx.channel(),bytes));
                 });
                 return null;
             }
@@ -83,5 +95,31 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
             }
         }
         return null;
+    }
+
+    //清除主题下面保留的消息
+    private void clearTopicRetainMsg(){
+        //TODO
+    }
+    private void saveTopicRetainMsg(){
+        //TODO
+    }
+    public void sendMsg(String topicOrQueueName,List<MessageProto.Message> msgs,ChannelPromise channelPromise){
+        List<MqttChannel> channels = ServerTopics.searchSubscriber(topicOrQueueName);
+        if(CollectionUtils.isEmpty(channels)){
+            return;
+        }
+        channels.forEach(mqttChannel -> {
+            mqttChannel.writeAndFlush(msgs,channelPromise);
+        });
+    }
+
+    private MessageProto.Message getMessage(PublishRequest publishRequest,boolean isTopic,String currentUser){
+        MessageProto.Message.Builder builder=MessageProto.Message.newBuilder();
+        builder.setMessageId(MessageIdGenerateUtils.messageId());
+        builder.setContent(ByteString.copyFrom(publishRequest.getPayload()));
+        builder.setType(isTopic?MessageProto.Message.Type.TOPIC:MessageProto.Message.Type.QUEUE);
+        builder.setFrom(currentUser);
+        return builder.build();
     }
 }
