@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MqttDispatchDecoder extends ByteToMessageDecoder {
-    private static final Logger logger= LoggerFactory.getLogger(MqttDispatchDecoder.class);
-    private final static Map<FixedHeadType,IDecoder> processors = Maps.newHashMap();
+    private static final Logger logger = LoggerFactory.getLogger(MqttDispatchDecoder.class);
+    private final static Map<FixedHeadType, IDecoder> processors = Maps.newHashMap();
 
     static {
         init();
@@ -28,26 +28,26 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
 
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> list) throws Exception {
         int readableSize = byteBuf.readableBytes();
-        int len=MQTTUtils.parseLength(byteBuf);
+        int len = MQTTUtils.parseLength(byteBuf);
         if (readableSize > 0) {
             byte headCode = byteBuf.getByte(0);
-            ByteBuf frame=frameDecode(len,ctx,byteBuf);
-            if(frame==null){//没有解析到数据
+            ByteBuf frame = frameDecode(len, ctx, byteBuf);
+            if (frame == null) {//没有解析到数据
                 return;
-            }else {
-                SimpleEncapPacket simpleEncapPacket=new SimpleEncapPacket(ctx,frame,list);
+            } else {
+                SimpleEncapPacket simpleEncapPacket = new SimpleEncapPacket(ctx, frame, list);
                 simpleEncapPacket.setHeadByte(headCode);
                 simpleEncapPacket.setLen(len);
 
-                IDecoder decoder=processors.get(FixedHeadType.valueOf(headCode));
-                if(decoder==null){//不合法或者不支持的报文
+                IDecoder decoder = processors.get(FixedHeadType.valueOf(headCode));
+                if (decoder == null) {//不合法或者不支持的报文
                     simpleEncapPacket.getCtx().close();
                 }
                 BaseRequest request = decoder.process(simpleEncapPacket);
 
-                byte[] bytes=decoder.response(simpleEncapPacket.getCtx(),request);
-                if(bytes!=null && bytes.length>0){//立即返回响应报文
-                    ByteBuf buffer=ctx.alloc().directBuffer();
+                byte[] bytes = decoder.response(simpleEncapPacket.getCtx(), request);
+                if (bytes != null && bytes.length > 0) {//立即返回响应报文
+                    ByteBuf buffer = ctx.alloc().directBuffer();
                     buffer.writeBytes(bytes);
                     ctx.writeAndFlush(buffer);
                 }
@@ -57,19 +57,20 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
 
     /**
      * 分包处理
+     *
      * @param in
      */
-    private ByteBuf frameDecode(int len,ChannelHandlerContext ctx,ByteBuf in) throws Exception{
-        int readableSize=in.readableBytes();
-        if(readableSize<len){//还没有足够的数据。等待ByteToMessageDecoder的cumulator自动累积数据
+    private ByteBuf frameDecode(int len, ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+        int readableSize = in.readableBytes();
+        if (readableSize < len) {//还没有足够的数据。等待ByteToMessageDecoder的cumulator自动累积数据
             return null;
         }
 
         //分包
-        int readerIndex=in.readerIndex();
-        int fixedHeaderLen=MQTTUtils.fixedHeaderBytes(len);
-        ByteBuf frame=in.retainedSlice(readerIndex+fixedHeaderLen,len);
-        in.readerIndex(readerIndex+fixedHeaderLen+len);
+        int readerIndex = in.readerIndex();
+        int fixedHeaderLen = MQTTUtils.fixedHeaderBytes(len);
+        ByteBuf frame = in.retainedSlice(readerIndex + fixedHeaderLen, len);
+        in.readerIndex(readerIndex + fixedHeaderLen + len);
         return frame;
     }
 
@@ -80,20 +81,20 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
     }
 
     private static void init() {
-        try{
+        try {
             List<Class<?>> classList = ClassUtils.getClassList(Starter.class.getPackage().getName(), true, Processor.class);
-            if(!CollectionUtils.isEmpty(classList)){
-                int size=classList.size();
+            if (!CollectionUtils.isEmpty(classList)) {
+                int size = classList.size();
                 for (int i = 0; i < size; i++) {
-                    Class<?> clazz=classList.get(i);
-                    if(IDecoder.class.isAssignableFrom(clazz)){
+                    Class<?> clazz = classList.get(i);
+                    if (IDecoder.class.isAssignableFrom(clazz)) {
                         Processor processorAnnotation = clazz.getAnnotation(Processor.class);
                         processors.put(processorAnnotation.targetType(), (IDecoder) clazz.newInstance());
                     }
                 }
             }
-        }catch (Exception e){
-            logger.error("init mqtt decoder occur error",e);
+        } catch (Exception e) {
+            logger.error("init mqtt decoder occur error", e);
         }
     }
 }

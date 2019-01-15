@@ -3,6 +3,7 @@ package netty.echo.client;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.utils.CollectionUtils;
 import org.fusesource.mqtt.client.BlockingConnection;
+import org.fusesource.mqtt.client.Message;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
 import org.junit.Before;
@@ -32,23 +33,22 @@ public class PackageTest {
         countDownLatch.await();
     }
 
-
-    public void subscribe(List<String> topicNames, List<Integer> qos) throws Exception {
-        if (CollectionUtils.isEmpty(topicNames)) {
-            return;
-        }
+    @Test
+    public void subscribe() throws Exception {
+        List<String> topicNames = Lists.newArrayListWithExpectedSize(1);
+        topicNames.add("hehe");
+        topicNames.add("haha");
         int topicNameSize = topicNames.size();
-        int qosSize = qos.size();
-        if (topicNameSize != qosSize) {
-            return;
-        }
         List<Topic> topics = Lists.newArrayListWithExpectedSize(topicNameSize);
         for (int i = 0; i < topicNameSize; i++) {
-            Topic topic = new Topic(topicNames.get(i), intToQos(qos.get(i)));
+            Topic topic = new Topic(topicNames.get(i), intToQos(1));
             topics.add(topic);
         }
         Topic[] topicsArr = new Topic[topicNameSize];
-        connection.subscribe(topics.toArray(topicsArr));
+        byte[] subscribe = connection.subscribe(topics.toArray(topicsArr));
+        System.out.println(new String(subscribe));
+        Message message = connection.receive();
+        System.out.println(new String(message.getPayload()));
     }
 
     public void unsubscribe(List<String> topicNames) throws Exception {
@@ -58,6 +58,10 @@ public class PackageTest {
         String[] topicArr = new String[topicNames.size()];
         connection.unsubscribe(topicNames.toArray(topicArr));
     }
+    @Test
+    public void publish() throws Exception{
+        connection.publish("haha","hello".getBytes(),QoS.AT_LEAST_ONCE,false);
+    }
 
 
     private QoS intToQos(int qos) {
@@ -65,8 +69,12 @@ public class PackageTest {
             return QoS.AT_MOST_ONCE;
         }
         if (qos == 1) {
-            return QoS.EXACTLY_ONCE;
+            return QoS.AT_LEAST_ONCE;
         }
-        return QoS.AT_LEAST_ONCE;
+        return QoS.EXACTLY_ONCE;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Integer.toBinaryString((byte)144) );
     }
 }

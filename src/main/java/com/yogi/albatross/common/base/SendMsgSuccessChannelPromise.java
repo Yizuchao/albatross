@@ -1,28 +1,37 @@
 package com.yogi.albatross.common.base;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.Channel;
 import io.netty.channel.DefaultChannelPromise;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 public class SendMsgSuccessChannelPromise extends DefaultChannelPromise {
-    private byte[] reponse;
-    private MqttChannel mqttChannel;
 
-    public SendMsgSuccessChannelPromise(MqttChannel mqttChannel, byte[] response) {
-        super(mqttChannel.channel());
-        this.reponse = response;
-        this.mqttChannel=mqttChannel;
+    public SendMsgSuccessChannelPromise(MqttChannel fromChannel, MqttChannel toChannel, byte[] reponse) {
+        super(toChannel.channel());
+        super.addListener(future -> {
+            if (future.isSuccess()) {
+                ByteBuf respByteBuf = PooledByteBufAllocator.DEFAULT.directBuffer(reponse.length).writeBytes(reponse);
+                fromChannel.writeAndFlush(respByteBuf, new ResponseChannelPromise(fromChannel.channel()));
+            } else {
+                future.cause().printStackTrace();
+            }
+        });
     }
 
-    private class DefaultListener implements GenericFutureListener {
+    private class ResponseChannelPromise extends DefaultChannelPromise {
 
-        @Override
-        public void operationComplete(Future future) throws Exception {
-            if (future.isSuccess()) {
-                mqttChannel.writeAndFlush(reponse);
-            }else {
-                //TODO   消息推送失败了
-            }
+        public ResponseChannelPromise(Channel channel) {
+            super(channel);
+            super.addListener(future -> {
+                if (future.isSuccess()) {
+                    System.out.println("replay sender success");
+                } else {
+                    future.cause().printStackTrace();
+                }
+            });
         }
     }
 }

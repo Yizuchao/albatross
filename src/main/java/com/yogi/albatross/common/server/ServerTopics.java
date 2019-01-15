@@ -3,8 +3,11 @@ package com.yogi.albatross.common.server;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.common.base.MqttChannel;
 import com.yogi.albatross.utils.CollectionUtils;
+import io.netty.channel.ChannelId;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,27 +16,46 @@ import java.util.Objects;
  */
 public class ServerTopics {
     private static final TopicTrie trie = new TopicTrie();
-
+    private static final HashSet<String> existChannels=new HashSet<>();
     /**
-     * @param topic       此时topic可包含特殊字符
+     * @param subscribeTopic       此时topic可包含特殊字符
      * @param mqttChannel
      */
-    public static void subscribe(String topic, MqttChannel mqttChannel) {
+    public static void subscribe(String subscribeTopic, MqttChannel mqttChannel) {
         synchronized (trie){
-            trie.add(topic, mqttChannel);
+            String existKey=mqttChannel.id().asLongText()+subscribeTopic;
+            if(!existChannels.contains(existKey)){
+                trie.add(subscribeTopic, mqttChannel);
+                existChannels.add(existKey);
+            }
+        }
+    }
+    public static void subscribe(List<String> subscribeTopics, MqttChannel mqttChannel) {
+        for (String s:subscribeTopics){
+            System.out.println(s);
+        }
+        synchronized (trie){
+            for (String subscribeTopic:subscribeTopics){
+                String existKey=mqttChannel.id().asLongText()+subscribeTopic;
+                if(!existChannels.contains(existKey)){
+                    trie.add(subscribeTopic, mqttChannel);
+                    existChannels.add(existKey);
+                }
+            }
         }
     }
 
     /**
-     * @param topic 此时topic不能包含除了"/"的其它特殊字符
+     * @param publishTopic 此时topic不能包含除了"/"的其它特殊字符
      * @return
      */
-    public static List<MqttChannel> searchSubscriber(String topic) {
-        if (Objects.isNull(topic)) {
+    public static List<MqttChannel> searchSubscriber(String publishTopic) {
+        if (Objects.isNull(publishTopic)) {
             return null;
         }
-        return trie.searchChannels(topic);
+        return trie.searchChannels(publishTopic);
     }
+
     public static void addTopics(List<String> topics){
         synchronized (trie){
             for (String topic:topics){
@@ -125,6 +147,7 @@ public class ServerTopics {
             }
 
             List<MqttChannel> channels=getPound();
+            channels=Objects.isNull(channels)?Lists.newArrayList():channels;
             Node rootNode=roots[rootIndex];
             if(cs.length==1){
                 CollectionUtils.addAll(channels,rootNode.getChannels());

@@ -1,6 +1,7 @@
 package com.yogi.albatross.request;
 
 import com.yogi.albatross.constants.common.PublishQos;
+import io.netty.buffer.ByteBuf;
 
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ public class PublishRequest extends BaseRequest{
     private String topicName;
     private int packetId;
     private byte[] payload;
+    private ByteBuf publishData;
 
     public int getDup() {
         return dup;
@@ -62,5 +64,13 @@ public class PublishRequest extends BaseRequest{
 
     public boolean isPayloadEmpty(){
         return Objects.isNull(payload) || payload.length==0;
+    }
+
+    public ByteBuf getPublishData() {
+        return publishData;
+    }
+
+    public void setPublishData(ByteBuf publishData) {
+        this.publishData = publishData;
     }
 }

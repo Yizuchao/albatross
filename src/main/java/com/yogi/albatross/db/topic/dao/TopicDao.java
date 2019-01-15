@@ -58,14 +58,14 @@ public class TopicDao {
             //subscribe
             StringBuilder newSb = new StringBuilder();
             for (int i = 0; i < size; i++) {
-                newSb.append(SqlUtils.LEFT_CLOSE);
-                newSb.append(SqlUtils.CHAR_HOLDER).append(topicNames.get(i)).append(SqlUtils.CHAR_HOLDER);
-                newSb.append(SqlUtils.CHAR_HOLDER).append(currentUser).append(SqlUtils.CHAR_HOLDER);
-                newSb.append(SqlUtils.CHAR_HOLDER).append(qoss.get(i).getCode()).append(SqlUtils.CHAR_HOLDER);
-                newSb.append(SqlUtils.RIGHT_CLOSE);
-                if (i == size - 1) {
+                if (i >0) {
                     newSb.append(SqlUtils.SEPARATOR);
                 }
+                newSb.append(SqlUtils.LEFT_CLOSE);
+                newSb.append(SqlUtils.CHAR_HOLDER).append(topicNames.get(i)).append(SqlUtils.CHAR_HOLDER).append(SqlUtils.SEPARATOR);
+                newSb.append(SqlUtils.CHAR_HOLDER).append(currentUser).append(SqlUtils.CHAR_HOLDER).append(SqlUtils.SEPARATOR);
+                newSb.append(SqlUtils.CHAR_HOLDER).append(qoss.get(i).getCode()).append(SqlUtils.CHAR_HOLDER);
+                newSb.append(SqlUtils.RIGHT_CLOSE);
             }
             DbUtils.insert(String.format(SUBSCRIBE, newSb.toString()));
             return true;

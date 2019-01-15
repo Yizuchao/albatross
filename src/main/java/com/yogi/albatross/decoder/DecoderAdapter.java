@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
+import io.netty.util.ReferenceCountUtil;
 
 public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<T> {
 
@@ -19,12 +20,8 @@ public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<
             e.printStackTrace();
             packet.getCtx().close();
             return null;
-        }
-        finally {
-            boolean release = packet.getByteBuf().release();
-            while (!release){//释放bytebuf
-                release=packet.getByteBuf().release();
-            }
+        } finally {
+            ReferenceCountUtil.release(packet.getByteBuf());
         }
     }
     protected abstract T process0(SimpleEncapPacket packet) throws Exception;

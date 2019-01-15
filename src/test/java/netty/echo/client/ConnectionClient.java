@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ConnectionClient{
+public class ConnectionClient {
     private final String host;
     private final int port;
     private final CountDownLatch latch;
@@ -35,6 +35,7 @@ public class ConnectionClient{
         this.port = port;
         latch = new CountDownLatch(1);
     }
+
     public void start() throws Exception {
         NioEventLoopGroup group = new NioEventLoopGroup();
         try {
