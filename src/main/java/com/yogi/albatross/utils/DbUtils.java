@@ -3,6 +3,8 @@ package com.yogi.albatross.utils;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.db.DbPool;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DbUtils {
+    private static final Logger logger=LoggerFactory.getLogger(DbUtils.class);
     public static ResultSet select(String sql, Object... params) throws Exception {
         return getStatement(sql, params).executeQuery();
     }
@@ -62,9 +65,9 @@ public class DbUtils {
                     return null;
                 }
             } catch (Exception e1) {
-                e1.printStackTrace();
+                logger.error(e1.getMessage(),e1);
             }
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return null;
     }

@@ -2,6 +2,8 @@ package com.yogi.albatross.common.server;
 
 
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentMap;
 
@@ -9,6 +11,7 @@ import java.util.concurrent.ConcurrentMap;
  * 保存每个channel过期时间
  */
 public class ChannelTimeHolder {
+    private static final Logger logger=LoggerFactory.getLogger(ChannelTimeHolder.class);
     private static final ConcurrentMap<String,ChannelTime> map= Maps.newConcurrentMap();
 
     public static void put(ChannelTime channelTime){
@@ -32,7 +35,7 @@ public class ChannelTimeHolder {
         try{
             map.remove(channelId);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return false;
         }
         return true;

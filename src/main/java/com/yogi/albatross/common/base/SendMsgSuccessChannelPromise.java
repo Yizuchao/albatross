@@ -6,8 +6,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.DefaultChannelPromise;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SendMsgSuccessChannelPromise extends DefaultChannelPromise {
+    private final Logger logger=LoggerFactory.getLogger(SendMsgSuccessChannelPromise.class);
 
     public SendMsgSuccessChannelPromise(MqttChannel fromChannel, MqttChannel toChannel, byte[] reponse) {
         super(toChannel.channel());
@@ -16,7 +19,7 @@ public class SendMsgSuccessChannelPromise extends DefaultChannelPromise {
                 ByteBuf respByteBuf = PooledByteBufAllocator.DEFAULT.directBuffer(reponse.length).writeBytes(reponse);
                 fromChannel.writeAndFlush(respByteBuf, new ResponseChannelPromise(fromChannel.channel()));
             } else {
-                future.cause().printStackTrace();
+                logger.error(future.cause().getMessage(),future.cause());
             }
         });
     }
@@ -26,10 +29,8 @@ public class SendMsgSuccessChannelPromise extends DefaultChannelPromise {
         public ResponseChannelPromise(Channel channel) {
             super(channel);
             super.addListener(future -> {
-                if (future.isSuccess()) {
-                    System.out.println("replay sender success");
-                } else {
-                    future.cause().printStackTrace();
+                if (!future.isSuccess()) {
+                    logger.error(future.cause().getMessage(),future.cause());
                 }
             });
         }

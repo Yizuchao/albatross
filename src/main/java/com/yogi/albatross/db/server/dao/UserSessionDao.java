@@ -8,6 +8,8 @@ import com.yogi.albatross.utils.DbUtils;
 import com.yogi.albatross.utils.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 @Dao
 public class UserSessionDao {
+    private static final Logger logger=LoggerFactory.getLogger(UserSessionDao.class);
     private static final String SAVE_OR_UPDATE ="insert into user_session(userId,serverSession,willTopic,willMessage,createTime,lastUpdateTime) values (?,?,?,?,?,?) on duplicate key update serverSession=?,willTopic=?,willMessage=?,lastUpdateTime=?";
     private static final String UPDATE="update user_session set serverSession=?,willTopic=?,willMessage=?,lastUpdateTime=?";
     private static final String SAVE_OR_UPDATE_WILL ="insert into user_session(userId,willTopic,willMessage,createTime,lastUpdateTime) values(?,?,?,?,?) on duplicate key update willTopic=?,willMessage=?,lastUpdateTime=?";
@@ -34,7 +37,7 @@ public class UserSessionDao {
                 return resultList.get(NumberUtils.INTEGER_ZERO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return NumberUtils.INTEGER_ZERO;
     }
@@ -47,7 +50,7 @@ public class UserSessionDao {
                 return ids.get(NumberUtils.INTEGER_ZERO);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return NumberUtils.INTEGER_ZERO;
     }
@@ -74,10 +77,10 @@ public class UserSessionDao {
                 try {
                     rs.close();
                 } catch (SQLException innere) {
-                    innere.printStackTrace();
+                    logger.error(innere.getMessage(),innere);
                 }
             }
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -89,7 +92,7 @@ public class UserSessionDao {
         try {
             DbUtils.update(CLEAR_WILL,new Date(),userId);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 

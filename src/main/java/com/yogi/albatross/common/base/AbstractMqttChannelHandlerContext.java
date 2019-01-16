@@ -62,8 +62,4 @@ public abstract class AbstractMqttChannelHandlerContext {
     public Long getCurrentUserId(){
         return channel.getCurrentUserId();
     }
-
-    public List<SubscribeDto> getNewest100Topics(){
-        return channel.getNewest100Topics();
-    }
 }

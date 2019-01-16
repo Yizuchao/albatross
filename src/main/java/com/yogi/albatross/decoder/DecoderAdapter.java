@@ -9,15 +9,18 @@ import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<T> {
+    private final Logger logger=LoggerFactory.getLogger(this.getClass());
 
     @Override
     public T process(SimpleEncapPacket packet) throws Exception {
         try{
             return process0(packet);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             packet.getCtx().close();
             return null;
         } finally {

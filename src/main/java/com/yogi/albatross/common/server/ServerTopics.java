@@ -3,11 +3,8 @@ package com.yogi.albatross.common.server;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.common.base.MqttChannel;
 import com.yogi.albatross.utils.CollectionUtils;
-import io.netty.channel.ChannelId;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,31 +13,19 @@ import java.util.Objects;
  */
 public class ServerTopics {
     private static final TopicTrie trie = new TopicTrie();
-    private static final HashSet<String> existChannels=new HashSet<>();
     /**
      * @param subscribeTopic       此时topic可包含特殊字符
      * @param mqttChannel
      */
     public static void subscribe(String subscribeTopic, MqttChannel mqttChannel) {
         synchronized (trie){
-            String existKey=mqttChannel.id().asLongText()+subscribeTopic;
-            if(!existChannels.contains(existKey)){
-                trie.add(subscribeTopic, mqttChannel);
-                existChannels.add(existKey);
-            }
+            trie.add(subscribeTopic, mqttChannel);
         }
     }
     public static void subscribe(List<String> subscribeTopics, MqttChannel mqttChannel) {
-        for (String s:subscribeTopics){
-            System.out.println(s);
-        }
         synchronized (trie){
             for (String subscribeTopic:subscribeTopics){
-                String existKey=mqttChannel.id().asLongText()+subscribeTopic;
-                if(!existChannels.contains(existKey)){
-                    trie.add(subscribeTopic, mqttChannel);
-                    existChannels.add(existKey);
-                }
+                trie.add(subscribeTopic, mqttChannel);
             }
         }
     }

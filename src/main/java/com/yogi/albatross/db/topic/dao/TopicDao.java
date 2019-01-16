@@ -7,12 +7,15 @@ import com.yogi.albatross.db.topic.dto.SubscribeDto;
 import com.yogi.albatross.utils.DbUtils;
 import com.yogi.albatross.utils.SqlUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.util.List;
 
 @Dao
 public class TopicDao {
+    private static final Logger logger=LoggerFactory.getLogger(TopicDao.class);
     private static final String INSERT = "insert into topic(name,creator) values %s";
     private static final String SELECT_BY_NAMES = "select id,name,creator from topic where %s";
     private static final String SUBSCRIBE = "insert into subscribe(topicName,subscriber,qos) values %s";
@@ -70,33 +73,8 @@ public class TopicDao {
             DbUtils.insert(String.format(SUBSCRIBE, newSb.toString()));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return false;
     }
-
-    /**
-     * 获取最新的100个订阅主题
-     *
-     * @param userId
-     * @return
-     */
-    public List<SubscribeDto> get100Newest(Long userId) {
-        List<SubscribeDto> topics = Lists.newArrayListWithExpectedSize(100);
-        try {
-            ResultSet resultSet = DbUtils.select(NEWEST_100, userId);
-            while (resultSet != null && resultSet.next()) {
-                SubscribeDto topic = new SubscribeDto();
-                topic.setName(resultSet.getString("topicName"));
-                topic.setCreator(resultSet.getLong("subscriber"));
-                topic.setQos(SubscribeQos.valueOf(resultSet.getInt("qos")));
-                topics.add(topic);
-            }
-            return topics;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return topics;
-    }
-
 }

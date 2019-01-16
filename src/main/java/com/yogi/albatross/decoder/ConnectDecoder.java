@@ -112,7 +112,7 @@ public class ConnectDecoder extends DecoderAdapter {
         short requestKeepLiveTime=packet.getByteBuf().readShort();
         connectRequest.setKeepLiveSecond(requestKeepLiveTime);
         //空闲链路检测
-        int keepLiveTime=Math.max(10,requestKeepLiveTime)*1000;
+        int keepLiveTime=Math.max(10,requestKeepLiveTime);
         packet.getCtx().pipeline().addLast(new IdleStateHandler(keepLiveTime,keepLiveTime,keepLiveTime));
         return connectRequest;
     }
@@ -168,8 +168,6 @@ public class ConnectDecoder extends DecoderAdapter {
                     //persist will
                     Integer sessionId = serverDao.saveOrUpdateWill(userDto.getId(), cr.getWillTopic(), cr.getWillMessage());
                     ctx.channel().getUserSession().setId(sessionId);
-                    //cache subscribe
-                    ctx.channel().setNewest100Topics(topicDao.get100Newest(userDto.getId()));
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
                 }

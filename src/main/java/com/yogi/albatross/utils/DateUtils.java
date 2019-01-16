@@ -1,6 +1,8 @@
 package com.yogi.albatross.utils;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import java.util.Date;
  * desc :
  */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
+    private static final Logger logger=LoggerFactory.getLogger(DateUtils.class);
 
     private static String[] parsePatterns = { "yyyy-MM-dd",
             "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd",
@@ -110,6 +113,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         try {
             return parseDate(str.toString(), parsePatterns);
         } catch (ParseException e) {
+            logger.error(e.getMessage(),e);
             return null;
         }
     }
@@ -172,7 +176,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         try {
             date = sdf.parse(formatDate(date, "yyyy-MM-dd") + " 00:00:00");
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return date;
     }
@@ -191,7 +195,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         try {
             date = sdf.parse(formatDate(date, "yyyy-MM-dd") + " 23:59:59");
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return date;
     }
@@ -211,7 +215,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         try {
             date = sdf.parse(formatDate(date, "yyyy-MM-dd") +" " + str);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return date;
     }
@@ -255,7 +259,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
             result =  preDate.compareTo(nextDate);
         } catch (Exception e) {
             result = 0;
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
         return result;
     }

@@ -16,17 +16,8 @@ import java.util.Objects;
  */
 public final class MqttChannel {
     private Channel parent;
-    private List<SubscribeDto> newest100Topics;
     public MqttChannel(Channel parent) {
         this.parent = parent;
-    }
-
-    public List<SubscribeDto> getNewest100Topics() {
-        return newest100Topics;
-    }
-
-    public void setNewest100Topics(List<SubscribeDto> newest100Topics) {
-        this.newest100Topics = newest100Topics;
     }
 
     public UserSession getUserSession() {

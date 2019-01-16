@@ -76,7 +76,7 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        logger.error(cause.getMessage(),cause);
         ctx.close();
     }
 

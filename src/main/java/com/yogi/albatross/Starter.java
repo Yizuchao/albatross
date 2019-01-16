@@ -1,8 +1,8 @@
 package com.yogi.albatross;
 
+import com.yogi.albatross.common.server.ServerIdleStateHandler;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.decoder.MqttDispatchDecoder;
-import com.yogi.albatross.decoder.ServerIdleStateHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -38,8 +38,8 @@ public class Starter {
                     //ChannelOutboundHandler 在注册的时候需要放在最后一个ChannelInboundHandler之前，否则将无法传递到ChannelOutboundHandler。
                     pipeline.addLast(new MqttDispatchDecoder());//mqtt decoder
                     //ChannelInboundHandler之间的传递，通过调用 ctx.fireChannelRead(msg) 实现；
-                    /*pipeline.addLast(new IdleStateHandler(30,30,30));
-                    pipeline.addLast(new ServerIdleStateHandler());*/
+                    //pipeline.addLast(new IdleStateHandler(30,30,30));
+                    pipeline.addLast(new ServerIdleStateHandler());
                 }
             });
             ChannelFuture future = bootstrap.channel(NioServerSocketChannel.class).bind();
@@ -51,7 +51,7 @@ public class Starter {
             logger.info("albatross success started on port:{}",port);
             future.channel().closeFuture().sync();
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         } finally {
             selectorGroup.shutdownGracefully();
             group.shutdownGracefully();
@@ -65,6 +65,5 @@ public class Starter {
     public static void init(){
         //dao init
         DaoManager.init("com.yogi.albatross.db");
-
     }
 }
