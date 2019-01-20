@@ -58,7 +58,7 @@ public class DbUtils {
             return preparedStatement;
         } catch (Exception e) {
             try {
-                if (connection != null) {
+                if (Objects.nonNull(connection)) {
                     connection.close();
                 }
                 if (preparedStatement != null) {

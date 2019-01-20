@@ -1,6 +1,6 @@
 package com.yogi.albatross.annotation;
 
-import com.yogi.albatross.constants.head.FixedHeadType;
+import com.yogi.albatross.constants.common.FixedHeadType;
 
 import java.lang.annotation.*;
 

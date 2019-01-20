@@ -5,16 +5,14 @@ import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.common.server.ServerTopics;
 import com.yogi.albatross.constants.common.SubscribeQos;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.topic.dao.TopicDao;
-import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.SubscribeRequest;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MQTTUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
@@ -28,7 +26,7 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
     }
 
     @Override
-    protected SubscribeRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected SubscribeRequest process0(MqttCommand packet) throws Exception {
         ByteBuf byteBuf=packet.getByteBuf();
         SubscribeRequest request = new SubscribeRequest();
         request.setPacketId(byteBuf.readUnsignedShort());

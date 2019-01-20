@@ -8,8 +8,8 @@ import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.constants.common.WillQos;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.server.dao.UserSessionDao;
 import com.yogi.albatross.db.server.entity.UserSession;
@@ -38,7 +38,7 @@ public class ConnectDecoder extends DecoderAdapter {
     }
 
     @Override
-    public BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    public BaseRequest process0(MqttCommand packet) throws Exception {
         String protocolName=readUTF(packet.getByteBuf());
         int protocolLevel=packet.getByteBuf().readByte();
         if(!Constants.PTOTOCOL_NAME.contains(protocolName) || Constants.PROTOCOL_LEVEL<protocolLevel){
@@ -48,7 +48,7 @@ public class ConnectDecoder extends DecoderAdapter {
         return connectRequest;
     }
 
-    private ConnectRequest connectFlags(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
+    private ConnectRequest connectFlags(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
         if(connectRequest==null){
             connectRequest=new ConnectRequest();
         }
@@ -108,7 +108,7 @@ public class ConnectDecoder extends DecoderAdapter {
      * @return
      * @throws Exception
      */
-    private ConnectRequest keepLive(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
+    private ConnectRequest keepLive(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
         short requestKeepLiveTime=packet.getByteBuf().readShort();
         connectRequest.setKeepLiveSecond(requestKeepLiveTime);
         //空闲链路检测
@@ -116,7 +116,7 @@ public class ConnectDecoder extends DecoderAdapter {
         packet.getCtx().pipeline().addLast(new IdleStateHandler(keepLiveTime,keepLiveTime,keepLiveTime));
         return connectRequest;
     }
-    private  ConnectRequest payload(SimpleEncapPacket packet,ConnectRequest connectRequest) throws Exception{
+    private  ConnectRequest payload(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
         ByteBuf byteBuf=packet.getByteBuf();
         //client id
         connectRequest.setClientId(readUTF(byteBuf));

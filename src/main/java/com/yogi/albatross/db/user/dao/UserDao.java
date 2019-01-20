@@ -10,9 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Dao
 public class UserDao {
@@ -22,8 +24,9 @@ public class UserDao {
     private static final String UPDATE_LAST_LOGIN_TIME="update user set lastLoginTime=? where username='%s'";
 
     public UserDto selectByUsername(String username){
+        ResultSet resultSet=null;
         try{
-            ResultSet resultSet=DbUtils.select(String.format(SELECT_BY_USERNAME,username));
+            resultSet=DbUtils.select(String.format(SELECT_BY_USERNAME,username));
             if(resultSet!=null){
                 while (resultSet.next()){
                     UserDto dto=new UserDto();
@@ -35,6 +38,14 @@ public class UserDao {
             }
         }catch (Exception e){
             logger.error(e.getMessage(),e);
+        }finally {
+            if(Objects.nonNull(resultSet)){
+                try {
+                    resultSet.close();
+                } catch (SQLException innere) {
+                    logger.error(innere.getMessage(),innere);
+                }
+            }
         }
         return null;
     }

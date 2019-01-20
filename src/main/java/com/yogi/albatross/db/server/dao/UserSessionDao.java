@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 保存服务器的运行信息
@@ -73,7 +74,7 @@ public class UserSessionDao {
                 return session;
             }
         }catch (Exception e){
-            if(rs!=null){
+            if(Objects.nonNull(rs)){
                 try {
                     rs.close();
                 } catch (SQLException innere) {

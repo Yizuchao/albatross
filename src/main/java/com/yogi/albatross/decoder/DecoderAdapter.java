@@ -1,13 +1,12 @@
 package com.yogi.albatross.decoder;
 
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.db.server.entity.UserSession;
 import com.yogi.albatross.request.BaseRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
-import com.yogi.albatross.common.server.ServerSessionProto.ServerSession;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,7 @@ public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<
     private final Logger logger=LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public T process(SimpleEncapPacket packet) throws Exception {
+    public T process(MqttCommand packet) throws Exception {
         try{
             return process0(packet);
         }catch (Exception e){
@@ -27,7 +26,7 @@ public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<
             ReferenceCountUtil.release(packet.getByteBuf());
         }
     }
-    protected abstract T process0(SimpleEncapPacket packet) throws Exception;
+    protected abstract T process0(MqttCommand packet) throws Exception;
 
     protected String readUTF(ByteBuf byteBuf, int len){
         return new String(readBytes(byteBuf,len), CharsetUtil.UTF_8);

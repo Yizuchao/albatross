@@ -3,7 +3,6 @@ package com.yogi.albatross.db.topic.dao;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Dao;
 import com.yogi.albatross.constants.common.SubscribeQos;
-import com.yogi.albatross.db.topic.dto.SubscribeDto;
 import com.yogi.albatross.utils.DbUtils;
 import com.yogi.albatross.utils.SqlUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -11,15 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 @Dao
 public class TopicDao {
     private static final Logger logger=LoggerFactory.getLogger(TopicDao.class);
     private static final String INSERT = "insert into topic(name,creator) values %s";
-    private static final String SELECT_BY_NAMES = "select id,name,creator from topic where %s";
+    private static final String SELECT_BY_NAMES = "selectOne id,name,creator from topic where %s";
     private static final String SUBSCRIBE = "insert into subscribe(topicName,subscriber,qos) values %s";
-    private static final String NEWEST_100 = "select topicName,subscriber,qos from subscribe where subscriber=?";
 
     /**
      * 保存主题。返回保存失败的主题
@@ -31,8 +31,9 @@ public class TopicDao {
      */
     public boolean saveOrSubscribe(List<String> topicNames, Long currentUser, List<SubscribeQos> qoss) {
         List<String> exsitsTopic = Lists.newArrayListWithCapacity(NumberUtils.INTEGER_ONE);
+        ResultSet resultSet =null;
         try {
-            ResultSet resultSet = DbUtils.select(String.format(SELECT_BY_NAMES,
+            resultSet=DbUtils.select(String.format(SELECT_BY_NAMES,
                     SqlUtils.getINSql("name", topicNames)));
             while (resultSet != null && resultSet.next()) {
                 exsitsTopic.add(resultSet.getString("name"));
@@ -74,6 +75,14 @@ public class TopicDao {
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
+        }finally {
+            if(Objects.nonNull(resultSet)){
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(),e);
+                }
+            }
         }
         return false;
     }

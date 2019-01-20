@@ -2,11 +2,9 @@ package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
-import com.yogi.albatross.request.BaseRequest;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.request.PubrelRequest;
-import io.netty.channel.ChannelHandlerContext;
 
 /**
  * “发布释放”报文处理类
@@ -14,7 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 @Processor(targetType = FixedHeadType.PUBREL)
 public class PubrelDecoder extends DecoderAdapter<PubrelRequest>{
     @Override
-    protected PubrelRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected PubrelRequest process0(MqttCommand packet) throws Exception {
         PubrelRequest request=new PubrelRequest();
         request.setPacketId(packet.getByteBuf().readUnsignedShort());
         return request;

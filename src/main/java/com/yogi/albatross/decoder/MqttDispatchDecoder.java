@@ -3,8 +3,8 @@ package com.yogi.albatross.decoder;
 import com.google.common.collect.Maps;
 import com.yogi.albatross.Starter;
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.utils.ClassUtils;
 import com.yogi.albatross.utils.CollectionUtils;
@@ -35,17 +35,17 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
             if (frame == null) {//没有解析到数据
                 return;
             } else {
-                SimpleEncapPacket simpleEncapPacket = new SimpleEncapPacket(ctx, frame, list);
-                simpleEncapPacket.setHeadByte(headCode);
-                simpleEncapPacket.setLen(len);
+                MqttCommand mqttCommand = new MqttCommand(ctx, frame, list);
+                mqttCommand.setHeadByte(headCode);
+                mqttCommand.setLen(len);
 
                 IDecoder decoder = processors.get(FixedHeadType.valueOf(headCode));
                 if (decoder == null) {//不合法或者不支持的报文
-                    simpleEncapPacket.getCtx().close();
+                    mqttCommand.getCtx().close();
                 }
-                BaseRequest request = decoder.process(simpleEncapPacket);
+                BaseRequest request = decoder.process(mqttCommand);
 
-                byte[] bytes = decoder.response(simpleEncapPacket.getCtx(), request);
+                byte[] bytes = decoder.response(mqttCommand.getCtx(), request);
                 if (bytes != null && bytes.length > 0) {//立即返回响应报文
                     ByteBuf buffer = ctx.alloc().directBuffer();
                     buffer.writeBytes(bytes);

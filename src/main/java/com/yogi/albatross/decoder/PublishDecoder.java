@@ -8,23 +8,15 @@ import com.yogi.albatross.common.base.SendMsgSuccessChannelPromise;
 import com.yogi.albatross.common.server.MessageProto;
 import com.yogi.albatross.common.server.ServerTopics;
 import com.yogi.albatross.constants.common.PublishQos;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
-import com.yogi.albatross.request.BaseRequest;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.request.PublishRequest;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MessageIdGenerateUtils;
 import com.yogi.albatross.utils.ThreadPoolUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.DefaultChannelPromise;
-import io.netty.util.ReferenceCountUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +24,7 @@ import java.util.Objects;
 public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     private static final int PUBLISH_PACKAGE_FIX_LEN=4;//用于表示主题名长度的两个字节+用于表示报文标识符的长度
     @Override
-    protected PublishRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected PublishRequest process0(MqttCommand packet) throws Exception {
         PublishRequest request=new PublishRequest();
         byte headByte=packet.getHeadByte();
         PublishQos qos=PublishQos.valueOf(headByte>>1 & 0x03);

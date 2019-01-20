@@ -1,4 +1,4 @@
-package com.yogi.albatross.constants.head;
+package com.yogi.albatross.constants.common;
 
 /**
  * 控制报文头部类型

@@ -3,11 +3,9 @@ package com.yogi.albatross.decoder;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
-import com.yogi.albatross.request.BaseRequest;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.request.UnsubscribeRequest;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ import java.util.List;
 public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeRequest>{
 
     @Override
-    protected UnsubscribeRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected UnsubscribeRequest process0(MqttCommand packet) throws Exception {
         UnsubscribeRequest unsubscribeRequest=new UnsubscribeRequest();
         unsubscribeRequest.setPacketId(packet.getByteBuf().readUnsignedShort());
         List<String> topics= Lists.newArrayListWithExpectedSize(5);

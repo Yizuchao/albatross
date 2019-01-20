@@ -2,15 +2,14 @@ package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.constants.head.FixedHeadType;
-import com.yogi.albatross.constants.packet.SimpleEncapPacket;
+import com.yogi.albatross.constants.common.FixedHeadType;
+import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.request.BaseRequest;
-import io.netty.channel.ChannelHandlerContext;
 
 @Processor(targetType = FixedHeadType.PINGREQ)
 public class PingDecoder extends DecoderAdapter{
     @Override
-    protected BaseRequest process0(SimpleEncapPacket packet) throws Exception {
+    protected BaseRequest process0(MqttCommand packet) throws Exception {
         return null;
     }
 
