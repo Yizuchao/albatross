@@ -7,6 +7,7 @@ import com.yogi.albatross.utils.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 主题详细匹配规则[4.7.1]：https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/04-OperationalBehavior.html
@@ -38,7 +39,11 @@ public class ServerTopics {
         if (Objects.isNull(publishTopic)) {
             return null;
         }
-        return trie.searchChannels(publishTopic);
+        List<MqttChannel> channels = trie.searchChannels(publishTopic);
+        if(!CollectionUtils.isEmpty(channels)){
+            return channels.stream().filter(mqttChannel -> !mqttChannel.isUnscribed()).collect(Collectors.toList());
+        }
+        return channels;
     }
 
     public static void addTopics(List<String> topics){

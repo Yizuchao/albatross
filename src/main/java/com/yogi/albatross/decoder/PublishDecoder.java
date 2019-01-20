@@ -10,6 +10,10 @@ import com.yogi.albatross.common.server.ServerTopics;
 import com.yogi.albatross.constants.common.PublishQos;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
+import com.yogi.albatross.db.DaoManager;
+import com.yogi.albatross.db.common.Status;
+import com.yogi.albatross.db.message.dao.MessageDao;
+import com.yogi.albatross.db.message.entity.Message;
 import com.yogi.albatross.request.PublishRequest;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MessageIdGenerateUtils;
@@ -22,6 +26,11 @@ import java.util.Objects;
 
 @Processor(targetType = FixedHeadType.PUBLISH)
 public class PublishDecoder extends DecoderAdapter<PublishRequest>{
+    private MessageDao messageDao;
+    public PublishDecoder() {
+        messageDao=DaoManager.getDao(MessageDao.class);
+    }
+
     private static final int PUBLISH_PACKAGE_FIX_LEN=4;//用于表示主题名长度的两个字节+用于表示报文标识符的长度
     @Override
     protected PublishRequest process0(MqttCommand packet) throws Exception {
@@ -96,8 +105,11 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     }
     public void sendMsg(String topicOrQueueName,ByteBuf publishData,AbstractMqttChannelHandlerContext ctx,byte[] response){
         ThreadPoolUtils.execute(()->{
-            //MessageProto.Message message = getMessage(content, true, String.valueOf(ctx.getCurrentUserId()));
-            //TODO 持久化消息
+            Message message=new Message();
+            message.setContent(publishData.array());
+            message.setSended(Status.OK);
+            messageDao.save(message);
+
             List<MqttChannel> channels = ServerTopics.searchSubscriber(topicOrQueueName);
             if(CollectionUtils.isEmpty(channels)){
                 return;

@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public final class MqttChannel {
     private Channel parent;
+    private volatile  boolean unscribed;
+
     public MqttChannel(Channel parent) {
         this.parent = parent;
     }
@@ -50,5 +52,17 @@ public final class MqttChannel {
     }
     protected Channel channel(){
         return parent;
+    }
+
+    public void setParent(Channel parent) {
+        this.parent = parent;
+    }
+
+    public void setUnscribed(boolean unscribed) {
+        this.unscribed = unscribed;
+    }
+
+    public boolean isUnscribed() {
+        return unscribed;
     }
 }
