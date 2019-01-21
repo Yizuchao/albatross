@@ -1,14 +1,12 @@
 package com.yogi.albatross.common.base;
 
 import com.yogi.albatross.db.server.entity.UserSession;
-import com.yogi.albatross.db.topic.dto.SubscribeDto;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
-import java.util.List;
 import java.util.Objects;
 
 /**

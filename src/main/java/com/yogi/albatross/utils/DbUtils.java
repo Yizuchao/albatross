@@ -61,8 +61,8 @@ public class DbUtils {
                 if (Objects.nonNull(connection)) {
                     connection.close();
                 }
-                if (preparedStatement != null) {
-                    return null;
+                if (Objects.nonNull(preparedStatement)) {
+                    preparedStatement.close();
                 }
             } catch (Exception e1) {
                 logger.error(e1.getMessage(),e1);

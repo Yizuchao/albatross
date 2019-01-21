@@ -4,13 +4,10 @@ package com.yogi.albatross.common.base;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.server.dao.UserSessionDao;
 import com.yogi.albatross.db.server.entity.UserSession;
-import com.yogi.albatross.db.topic.dto.SubscribeDto;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.List;
 
 public abstract class AbstractMqttChannelHandlerContext {
     private final ChannelHandlerContext ctx;
