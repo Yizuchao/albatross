@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<T> {
-    private final Logger logger=LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger=LoggerFactory.getLogger(this.getClass());
 
     @Override
     public T process(MqttCommand packet) throws Exception {

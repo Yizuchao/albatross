@@ -7,6 +7,7 @@ import com.yogi.albatross.db.server.entity.UserSession;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public abstract class AbstractMqttChannelHandlerContext {
@@ -54,6 +55,10 @@ public abstract class AbstractMqttChannelHandlerContext {
     }
     public ChannelFuture writeAndFlush(Object msg){
         return ctx.writeAndFlush(msg);
+    }
+
+    public ChannelFuture writeAndFlush(Object msg,ChannelPromise promise){
+        return ctx.writeAndFlush(msg,promise);
     }
 
     public Long getCurrentUserId(){
