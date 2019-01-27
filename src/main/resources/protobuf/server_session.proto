@@ -3,13 +3,16 @@ option java_package="com.yogi.albatross.common.server";
 option java_outer_classname="ServerSessionProto";
 import "message.proto";
 message ServerSession {
-    string channelId=1;
-    repeated Message sendNoAcks=2;
-    repeated Message willSends=3;
-    repeated Message recNoAcks=4;
-    int64 keepLiveSecond=5;
-    int32 willFalg=6;
-    int32 willQos=7;
-    int32 willRetain=8;
-    bool clearSession=9;
+    repeated Message sendNoAcks=1;
+    repeated Message willSends=2;
+    repeated Message recNoAcks=3;
+    int64 keepLiveSecond=4;
+    int32 willFalg=5;
+    int32 willQos=6;
+    int32 willRetain=7;
+    bool clearSession=8;
+    string clientId=9;
+    int64 userId=10;
+    string willMessage=11;
+    string willTopic=12;
 }

@@ -3,7 +3,6 @@ package com.yogi.albatross.decoder;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.common.base.MqttChannel;
-import com.yogi.albatross.common.server.ChannelTimeHolder;
 import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.Constants;
@@ -11,12 +10,11 @@ import com.yogi.albatross.constants.common.WillQos;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.db.DaoManager;
-import com.yogi.albatross.db.server.dao.UserSessionDao;
-import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.db.server.dao.SessionDao;
+import com.yogi.albatross.db.server.entity.Session;
 import com.yogi.albatross.db.topic.dao.TopicDao;
 import com.yogi.albatross.db.user.dao.UserDao;
 import com.yogi.albatross.db.user.dto.UserDto;
-import com.yogi.albatross.request.BaseRequest;
 import com.yogi.albatross.request.ConnectRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -26,19 +24,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @Processor(targetType = FixedHeadType.CONNECT)
-public class ConnectDecoder extends DecoderAdapter {
+public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
     private UserDao dao;
-    private UserSessionDao serverDao;
+    private SessionDao serverDao;
     private TopicDao topicDao;
 
     public ConnectDecoder() {
         dao= DaoManager.getDao(UserDao.class);
-        serverDao=DaoManager.getDao(UserSessionDao.class);
+        serverDao=DaoManager.getDao(SessionDao.class);
         topicDao=DaoManager.getDao(TopicDao.class);
     }
 
     @Override
-    public BaseRequest process0(MqttCommand packet) throws Exception {
+    public ConnectRequest process0(MqttCommand packet) throws Exception {
         String protocolName=readUTF(packet.getByteBuf());
         int protocolLevel=packet.getByteBuf().readByte();
         if(!Constants.PTOTOCOL_NAME.contains(protocolName) || Constants.PROTOCOL_LEVEL<protocolLevel){
@@ -56,7 +54,6 @@ public class ConnectDecoder extends DecoderAdapter {
         byte flags=packet.getByteBuf().readByte();
         if((flags & 0x02)!=0){
             connectRequest.setClearSession(true);
-            clearSession(packet.getCtx());
         }else{
             connectRequest.setClearSession(false);
         }
@@ -137,37 +134,36 @@ public class ConnectDecoder extends DecoderAdapter {
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, BaseRequest request) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, ConnectRequest request) throws Exception {
         if(request!=null){
-            ConnectRequest cr=(ConnectRequest) request;
             byte[] bs=new byte[4];
             bs[0]=0x20;
             bs[1]=0x02;
-            if(cr.getAck()!=null){
+            if(request.getAck()!=null){
                 bs[2]=0x00;
-                bs[3]=cr.getAck().getCode();
+                bs[3]=request.getAck().getCode();
             }else {
-                if(StringUtils.isEmpty(cr.getUsername())){
+                if(StringUtils.isEmpty(request.getUsername())){
                     //TODO 是否支持匿名链接？
                 }
+                if(request.getClearSession()){//清除session
+                    clearSession(ctx,request.getClientId());
+                }
+
                 boolean usernameOrPsw=false;
-                UserDto userDto = dao.selectByUsername(cr.getUsername());
-                if(userDto!=null && userDto.getPassword().equals(cr.getPassword())){
-                    dao.updateLastLoginTime(cr.getUsername());
+                UserDto userDto = dao.selectByUsername(request.getUsername());
+                if(userDto!=null && userDto.getPassword().equals(request.getPassword())){
+                    dao.updateLastLoginTime(request.getUsername());
 
                     bs[3]= ConnAck.OK.getCode();
                     usernameOrPsw=true;
-                    //create or recovery sessionserver_session
                     boolean hasRecovery=false;
-                    if(!cr.getClearSession()){//没有设置清除session，则尝试恢复session
-                        hasRecovery=recoverySession(ctx, userDto.getId());
+                    if(!request.getClearSession()){//没有设置清除session，则尝试恢复session
+                        hasRecovery=recoverySession(ctx, request);
                     }
-                    if(cr.getClearSession() || !hasRecovery){
-                        createSession(ctx,cr,userDto.getId());
+                    if(request.getClearSession() || !hasRecovery){
+                        createSession(ctx,request,userDto.getId());
                     }
-                    //persist will
-                    Integer sessionId = serverDao.saveOrUpdateWill(userDto.getId(), cr.getWillTopic(), cr.getWillMessage());
-                    ctx.channel().getUserSession().setId(sessionId);
                 }else {
                     bs[3]=ConnAck.ERROR_USERNAME_OR_PSW.getCode();
                 }
@@ -189,39 +185,47 @@ public class ConnectDecoder extends DecoderAdapter {
      * @param ctx
      * @param request
      */
-    private UserSession createSession(AbstractMqttChannelHandlerContext ctx, ConnectRequest request,Long userId){
+    private Session createSession(AbstractMqttChannelHandlerContext ctx, ConnectRequest request, Long userId){
         MqttChannel channel=ctx.channel();
-        String channelId=channel.id().asLongText();
         ServerSessionProto.ServerSession.Builder builder = ServerSessionProto.ServerSession.newBuilder();
-        builder.setChannelId(request.getUsername());
         builder.setKeepLiveSecond(request.getKeepLiveSecond()*1000);
         builder.setWillQos(request.getWillQos().getCode());
         builder.setWillFalg(request.getWillFlag());
         builder.setWillRetain(request.getWillRetain());
         builder.setClearSession(request.getClearSession());
+        builder.setClientId(request.getClientId());
+        builder.setUserId(userId);
+        builder.setWillMessage(request.getWillMessage());
+        builder.setWillTopic(request.getWillTopic());
         ServerSessionProto.ServerSession serverSession=builder.build();
-        UserSession userSession=new UserSession();
-        userSession.setUserId(userId);
-        userSession.setServerSession(serverSession);
-        userSession.setWillMessage(request.getWillMessage());
-        userSession.setWillTopic(request.getWillTopic());
-        Attribute<UserSession> attr = channel.attr(AttributeKey.valueOf(channelId));
-        attr.set(userSession);
-        return userSession;
+        Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(request.getClientId()));
+        attr.set(serverSession);
+
+        Session session =new Session();
+        session.setServerSession(serverSession);
+        session.setClientId(request.getClientId());
+        return session;
     }
 
     /**
      * 恢复session
      * @param ctx
-     * @param userId
+     * @param request
      */
-    private boolean recoverySession(AbstractMqttChannelHandlerContext ctx,Long userId){
-        UserSession userSession=serverDao.getSessionFromDb(userId);
-        if(userSession!=null){
+    private boolean recoverySession(AbstractMqttChannelHandlerContext ctx,ConnectRequest request){
+        Session session =serverDao.getSessionFromDb(request.getClientId());
+        if(session !=null){
+            //保存遗嘱消息
+            ServerSessionProto.ServerSession.Builder builder = ServerSessionProto.ServerSession.newBuilder(session.getServerSession());
+            builder.setWillMessage(request.getWillMessage());
+            builder.setWillTopic(request.getWillTopic());
+            ServerSessionProto.ServerSession serverSession=builder.build();
+            session.setServerSession(serverSession);
+            serverDao.saveOrUpdateSession(session);
+
             MqttChannel channel=ctx.channel();
-            String channelId=channel.id().asLongText();
-            Attribute<UserSession> attr = channel.attr(AttributeKey.valueOf(channelId));
-            attr.set(userSession);
+            Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(session.getServerSession().getClientId()));
+            attr.set(serverSession);
             return true;
         }
         return false;
@@ -232,12 +236,9 @@ public class ConnectDecoder extends DecoderAdapter {
      *   清除session
      * @param ctx
      */
-    private void clearSession(AbstractMqttChannelHandlerContext ctx){
+    private void clearSession(AbstractMqttChannelHandlerContext ctx,String clientId){
         MqttChannel channel=ctx.channel();
-        String channelId=channel.id().asLongText();
-        ChannelTimeHolder.remove(channelId);
-
-        Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(channelId));
+        Attribute<ServerSessionProto.ServerSession> attr = channel.attr(AttributeKey.valueOf(clientId));
         attr.set(null);
     }
 }

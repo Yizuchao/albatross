@@ -1,7 +1,7 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.constants.common.MqttCommand;
-import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.db.server.entity.Session;
 import com.yogi.albatross.request.BaseRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,13 +40,5 @@ public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<
         byte[] bytes=new byte[len];
         byteBuf.readBytes(bytes);
         return bytes;
-    }
-
-    protected Long currentUser(ChannelHandlerContext ctx){
-        return getSession(ctx).getUserId();
-    }
-
-    protected UserSession getSession(ChannelHandlerContext ctx){
-        return (UserSession) ctx.channel().attr(AttributeKey.valueOf(ctx.channel().id().asLongText())).get();
     }
 }

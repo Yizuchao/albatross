@@ -52,7 +52,7 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
 
     @Override
     public byte[] response(AbstractMqttChannelHandlerContext ctx, SubscribeRequest subscribeRequest) throws Exception {
-        boolean saveSuccess=topicDao.saveOrSubscribe(subscribeRequest.getTopics(),ctx.getCurrentUserId(),subscribeRequest.getQos());
+        boolean saveSuccess=topicDao.saveOrSubscribe(subscribeRequest.getTopics(),ctx.getClientId(),subscribeRequest.getQos());
         ServerTopics.subscribe(subscribeRequest.getTopics(),ctx.channel());
         //response bytes
         int topicsSize=subscribeRequest.getTopics().size();

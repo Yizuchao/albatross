@@ -19,111 +19,136 @@ public final class ServerSessionProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string channelId = 1;</code>
-     */
-    java.lang.String getChannelId();
-    /**
-     * <code>string channelId = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getChannelIdBytes();
-
-    /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     java.util.List<com.yogi.albatross.common.server.MessageProto.Message> 
         getSendNoAcksList();
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     com.yogi.albatross.common.server.MessageProto.Message getSendNoAcks(int index);
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     int getSendNoAcksCount();
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getSendNoAcksOrBuilderList();
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getSendNoAcksOrBuilder(
         int index);
 
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     java.util.List<com.yogi.albatross.common.server.MessageProto.Message> 
         getWillSendsList();
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     com.yogi.albatross.common.server.MessageProto.Message getWillSends(int index);
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     int getWillSendsCount();
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getWillSendsOrBuilderList();
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getWillSendsOrBuilder(
         int index);
 
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     java.util.List<com.yogi.albatross.common.server.MessageProto.Message> 
         getRecNoAcksList();
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     com.yogi.albatross.common.server.MessageProto.Message getRecNoAcks(int index);
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     int getRecNoAcksCount();
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getRecNoAcksOrBuilderList();
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getRecNoAcksOrBuilder(
         int index);
 
     /**
-     * <code>int64 keepLiveSecond = 5;</code>
+     * <code>int64 keepLiveSecond = 4;</code>
      */
     long getKeepLiveSecond();
 
     /**
-     * <code>int32 willFalg = 6;</code>
+     * <code>int32 willFalg = 5;</code>
      */
     int getWillFalg();
 
     /**
-     * <code>int32 willQos = 7;</code>
+     * <code>int32 willQos = 6;</code>
      */
     int getWillQos();
 
     /**
-     * <code>int32 willRetain = 8;</code>
+     * <code>int32 willRetain = 7;</code>
      */
     int getWillRetain();
 
     /**
-     * <code>bool clearSession = 9;</code>
+     * <code>bool clearSession = 8;</code>
      */
     boolean getClearSession();
+
+    /**
+     * <code>string clientId = 9;</code>
+     */
+    java.lang.String getClientId();
+    /**
+     * <code>string clientId = 9;</code>
+     */
+    com.google.protobuf.ByteString
+        getClientIdBytes();
+
+    /**
+     * <code>int64 userId = 10;</code>
+     */
+    long getUserId();
+
+    /**
+     * <code>string willMessage = 11;</code>
+     */
+    java.lang.String getWillMessage();
+    /**
+     * <code>string willMessage = 11;</code>
+     */
+    com.google.protobuf.ByteString
+        getWillMessageBytes();
+
+    /**
+     * <code>string willTopic = 12;</code>
+     */
+    java.lang.String getWillTopic();
+    /**
+     * <code>string willTopic = 12;</code>
+     */
+    com.google.protobuf.ByteString
+        getWillTopicBytes();
   }
   /**
    * Protobuf type {@code ServerSession}
@@ -138,7 +163,6 @@ public final class ServerSessionProto {
       super(builder);
     }
     private ServerSession() {
-      channelId_ = "";
       sendNoAcks_ = java.util.Collections.emptyList();
       willSends_ = java.util.Collections.emptyList();
       recNoAcks_ = java.util.Collections.emptyList();
@@ -147,6 +171,10 @@ public final class ServerSessionProto {
       willQos_ = 0;
       willRetain_ = 0;
       clearSession_ = false;
+      clientId_ = "";
+      userId_ = 0L;
+      willMessage_ = "";
+      willTopic_ = "";
     }
 
     @java.lang.Override
@@ -173,69 +201,86 @@ public final class ServerSessionProto {
             case 0:
               done = true;
               break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              channelId_ = s;
-              break;
-            }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                sendNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              sendNoAcks_.add(
-                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                willSends_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              willSends_.add(
-                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
-              break;
-            }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                recNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              recNoAcks_.add(
-                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
-              break;
-            }
-            case 40: {
-
-              keepLiveSecond_ = input.readInt64();
-              break;
-            }
-            case 48: {
-
-              willFalg_ = input.readInt32();
-              break;
-            }
-            case 56: {
-
-              willQos_ = input.readInt32();
-              break;
-            }
-            case 64: {
-
-              willRetain_ = input.readInt32();
-              break;
-            }
-            case 72: {
-
-              clearSession_ = input.readBool();
-              break;
-            }
             default: {
               if (!parseUnknownFieldProto3(
                   input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                sendNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              sendNoAcks_.add(
+                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                willSends_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              willSends_.add(
+                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                recNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              recNoAcks_.add(
+                  input.readMessage(com.yogi.albatross.common.server.MessageProto.Message.parser(), extensionRegistry));
+              break;
+            }
+            case 32: {
+
+              keepLiveSecond_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              willFalg_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              willQos_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              willRetain_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              clearSession_ = input.readBool();
+              break;
+            }
+            case 74: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              clientId_ = s;
+              break;
+            }
+            case 80: {
+
+              userId_ = input.readInt64();
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              willMessage_ = s;
+              break;
+            }
+            case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              willTopic_ = s;
               break;
             }
           }
@@ -246,13 +291,13 @@ public final class ServerSessionProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           sendNoAcks_ = java.util.Collections.unmodifiableList(sendNoAcks_);
         }
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           willSends_ = java.util.Collections.unmodifiableList(willSends_);
         }
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
           recNoAcks_ = java.util.Collections.unmodifiableList(recNoAcks_);
         }
         this.unknownFields = unknownFields.build();
@@ -264,7 +309,6 @@ public final class ServerSessionProto {
       return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
     }
 
-    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_fieldAccessorTable
@@ -273,192 +317,268 @@ public final class ServerSessionProto {
     }
 
     private int bitField0_;
-    public static final int CHANNELID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object channelId_;
-    /**
-     * <code>string channelId = 1;</code>
-     */
-    public java.lang.String getChannelId() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        channelId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string channelId = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getChannelIdBytes() {
-      java.lang.Object ref = channelId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        channelId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int SENDNOACKS_FIELD_NUMBER = 2;
+    public static final int SENDNOACKS_FIELD_NUMBER = 1;
     private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> sendNoAcks_;
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getSendNoAcksList() {
       return sendNoAcks_;
     }
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getSendNoAcksOrBuilderList() {
       return sendNoAcks_;
     }
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     public int getSendNoAcksCount() {
       return sendNoAcks_.size();
     }
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.Message getSendNoAcks(int index) {
       return sendNoAcks_.get(index);
     }
     /**
-     * <code>repeated .Message sendNoAcks = 2;</code>
+     * <code>repeated .Message sendNoAcks = 1;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getSendNoAcksOrBuilder(
         int index) {
       return sendNoAcks_.get(index);
     }
 
-    public static final int WILLSENDS_FIELD_NUMBER = 3;
+    public static final int WILLSENDS_FIELD_NUMBER = 2;
     private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> willSends_;
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getWillSendsList() {
       return willSends_;
     }
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getWillSendsOrBuilderList() {
       return willSends_;
     }
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     public int getWillSendsCount() {
       return willSends_.size();
     }
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.Message getWillSends(int index) {
       return willSends_.get(index);
     }
     /**
-     * <code>repeated .Message willSends = 3;</code>
+     * <code>repeated .Message willSends = 2;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getWillSendsOrBuilder(
         int index) {
       return willSends_.get(index);
     }
 
-    public static final int RECNOACKS_FIELD_NUMBER = 4;
+    public static final int RECNOACKS_FIELD_NUMBER = 3;
     private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> recNoAcks_;
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getRecNoAcksList() {
       return recNoAcks_;
     }
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
         getRecNoAcksOrBuilderList() {
       return recNoAcks_;
     }
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     public int getRecNoAcksCount() {
       return recNoAcks_.size();
     }
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.Message getRecNoAcks(int index) {
       return recNoAcks_.get(index);
     }
     /**
-     * <code>repeated .Message recNoAcks = 4;</code>
+     * <code>repeated .Message recNoAcks = 3;</code>
      */
     public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getRecNoAcksOrBuilder(
         int index) {
       return recNoAcks_.get(index);
     }
 
-    public static final int KEEPLIVESECOND_FIELD_NUMBER = 5;
+    public static final int KEEPLIVESECOND_FIELD_NUMBER = 4;
     private long keepLiveSecond_;
     /**
-     * <code>int64 keepLiveSecond = 5;</code>
+     * <code>int64 keepLiveSecond = 4;</code>
      */
     public long getKeepLiveSecond() {
       return keepLiveSecond_;
     }
 
-    public static final int WILLFALG_FIELD_NUMBER = 6;
+    public static final int WILLFALG_FIELD_NUMBER = 5;
     private int willFalg_;
     /**
-     * <code>int32 willFalg = 6;</code>
+     * <code>int32 willFalg = 5;</code>
      */
     public int getWillFalg() {
       return willFalg_;
     }
 
-    public static final int WILLQOS_FIELD_NUMBER = 7;
+    public static final int WILLQOS_FIELD_NUMBER = 6;
     private int willQos_;
     /**
-     * <code>int32 willQos = 7;</code>
+     * <code>int32 willQos = 6;</code>
      */
     public int getWillQos() {
       return willQos_;
     }
 
-    public static final int WILLRETAIN_FIELD_NUMBER = 8;
+    public static final int WILLRETAIN_FIELD_NUMBER = 7;
     private int willRetain_;
     /**
-     * <code>int32 willRetain = 8;</code>
+     * <code>int32 willRetain = 7;</code>
      */
     public int getWillRetain() {
       return willRetain_;
     }
 
-    public static final int CLEARSESSION_FIELD_NUMBER = 9;
+    public static final int CLEARSESSION_FIELD_NUMBER = 8;
     private boolean clearSession_;
     /**
-     * <code>bool clearSession = 9;</code>
+     * <code>bool clearSession = 8;</code>
      */
     public boolean getClearSession() {
       return clearSession_;
     }
 
+    public static final int CLIENTID_FIELD_NUMBER = 9;
+    private volatile java.lang.Object clientId_;
+    /**
+     * <code>string clientId = 9;</code>
+     */
+    public java.lang.String getClientId() {
+      java.lang.Object ref = clientId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        clientId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string clientId = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+        getClientIdBytes() {
+      java.lang.Object ref = clientId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        clientId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERID_FIELD_NUMBER = 10;
+    private long userId_;
+    /**
+     * <code>int64 userId = 10;</code>
+     */
+    public long getUserId() {
+      return userId_;
+    }
+
+    public static final int WILLMESSAGE_FIELD_NUMBER = 11;
+    private volatile java.lang.Object willMessage_;
+    /**
+     * <code>string willMessage = 11;</code>
+     */
+    public java.lang.String getWillMessage() {
+      java.lang.Object ref = willMessage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        willMessage_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string willMessage = 11;</code>
+     */
+    public com.google.protobuf.ByteString
+        getWillMessageBytes() {
+      java.lang.Object ref = willMessage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        willMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int WILLTOPIC_FIELD_NUMBER = 12;
+    private volatile java.lang.Object willTopic_;
+    /**
+     * <code>string willTopic = 12;</code>
+     */
+    public java.lang.String getWillTopic() {
+      java.lang.Object ref = willTopic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        willTopic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string willTopic = 12;</code>
+     */
+    public com.google.protobuf.ByteString
+        getWillTopicBytes() {
+      java.lang.Object ref = willTopic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        willTopic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
-    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -468,79 +588,96 @@ public final class ServerSessionProto {
       return true;
     }
 
-    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getChannelIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, channelId_);
-      }
       for (int i = 0; i < sendNoAcks_.size(); i++) {
-        output.writeMessage(2, sendNoAcks_.get(i));
+        output.writeMessage(1, sendNoAcks_.get(i));
       }
       for (int i = 0; i < willSends_.size(); i++) {
-        output.writeMessage(3, willSends_.get(i));
+        output.writeMessage(2, willSends_.get(i));
       }
       for (int i = 0; i < recNoAcks_.size(); i++) {
-        output.writeMessage(4, recNoAcks_.get(i));
+        output.writeMessage(3, recNoAcks_.get(i));
       }
       if (keepLiveSecond_ != 0L) {
-        output.writeInt64(5, keepLiveSecond_);
+        output.writeInt64(4, keepLiveSecond_);
       }
       if (willFalg_ != 0) {
-        output.writeInt32(6, willFalg_);
+        output.writeInt32(5, willFalg_);
       }
       if (willQos_ != 0) {
-        output.writeInt32(7, willQos_);
+        output.writeInt32(6, willQos_);
       }
       if (willRetain_ != 0) {
-        output.writeInt32(8, willRetain_);
+        output.writeInt32(7, willRetain_);
       }
       if (clearSession_ != false) {
-        output.writeBool(9, clearSession_);
+        output.writeBool(8, clearSession_);
+      }
+      if (!getClientIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, clientId_);
+      }
+      if (userId_ != 0L) {
+        output.writeInt64(10, userId_);
+      }
+      if (!getWillMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, willMessage_);
+      }
+      if (!getWillTopicBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, willTopic_);
       }
       unknownFields.writeTo(output);
     }
 
-    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (!getChannelIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, channelId_);
-      }
       for (int i = 0; i < sendNoAcks_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, sendNoAcks_.get(i));
+          .computeMessageSize(1, sendNoAcks_.get(i));
       }
       for (int i = 0; i < willSends_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, willSends_.get(i));
+          .computeMessageSize(2, willSends_.get(i));
       }
       for (int i = 0; i < recNoAcks_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, recNoAcks_.get(i));
+          .computeMessageSize(3, recNoAcks_.get(i));
       }
       if (keepLiveSecond_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, keepLiveSecond_);
+          .computeInt64Size(4, keepLiveSecond_);
       }
       if (willFalg_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, willFalg_);
+          .computeInt32Size(5, willFalg_);
       }
       if (willQos_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, willQos_);
+          .computeInt32Size(6, willQos_);
       }
       if (willRetain_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, willRetain_);
+          .computeInt32Size(7, willRetain_);
       }
       if (clearSession_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(9, clearSession_);
+          .computeBoolSize(8, clearSession_);
+      }
+      if (!getClientIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, clientId_);
+      }
+      if (userId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, userId_);
+      }
+      if (!getWillMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, willMessage_);
+      }
+      if (!getWillTopicBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, willTopic_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -558,8 +695,6 @@ public final class ServerSessionProto {
       com.yogi.albatross.common.server.ServerSessionProto.ServerSession other = (com.yogi.albatross.common.server.ServerSessionProto.ServerSession) obj;
 
       boolean result = true;
-      result = result && getChannelId()
-          .equals(other.getChannelId());
       result = result && getSendNoAcksList()
           .equals(other.getSendNoAcksList());
       result = result && getWillSendsList()
@@ -576,6 +711,14 @@ public final class ServerSessionProto {
           == other.getWillRetain());
       result = result && (getClearSession()
           == other.getClearSession());
+      result = result && getClientId()
+          .equals(other.getClientId());
+      result = result && (getUserId()
+          == other.getUserId());
+      result = result && getWillMessage()
+          .equals(other.getWillMessage());
+      result = result && getWillTopic()
+          .equals(other.getWillTopic());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -587,8 +730,6 @@ public final class ServerSessionProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + CHANNELID_FIELD_NUMBER;
-      hash = (53 * hash) + getChannelId().hashCode();
       if (getSendNoAcksCount() > 0) {
         hash = (37 * hash) + SENDNOACKS_FIELD_NUMBER;
         hash = (53 * hash) + getSendNoAcksList().hashCode();
@@ -613,6 +754,15 @@ public final class ServerSessionProto {
       hash = (37 * hash) + CLEARSESSION_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getClearSession());
+      hash = (37 * hash) + CLIENTID_FIELD_NUMBER;
+      hash = (53 * hash) + getClientId().hashCode();
+      hash = (37 * hash) + USERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getUserId());
+      hash = (37 * hash) + WILLMESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getWillMessage().hashCode();
+      hash = (37 * hash) + WILLTOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getWillTopic().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -688,7 +838,6 @@ public final class ServerSessionProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -696,7 +845,6 @@ public final class ServerSessionProto {
     public static Builder newBuilder(com.yogi.albatross.common.server.ServerSessionProto.ServerSession prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -720,7 +868,6 @@ public final class ServerSessionProto {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
       }
 
-      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_fieldAccessorTable
@@ -746,26 +893,23 @@ public final class ServerSessionProto {
           getRecNoAcksFieldBuilder();
         }
       }
-      @java.lang.Override
       public Builder clear() {
         super.clear();
-        channelId_ = "";
-
         if (sendNoAcksBuilder_ == null) {
           sendNoAcks_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           sendNoAcksBuilder_.clear();
         }
         if (willSendsBuilder_ == null) {
           willSends_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           willSendsBuilder_.clear();
         }
         if (recNoAcksBuilder_ == null) {
           recNoAcks_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           recNoAcksBuilder_.clear();
         }
@@ -779,21 +923,26 @@ public final class ServerSessionProto {
 
         clearSession_ = false;
 
+        clientId_ = "";
+
+        userId_ = 0L;
+
+        willMessage_ = "";
+
+        willTopic_ = "";
+
         return this;
       }
 
-      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return com.yogi.albatross.common.server.ServerSessionProto.internal_static_ServerSession_descriptor;
       }
 
-      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession getDefaultInstanceForType() {
         return com.yogi.albatross.common.server.ServerSessionProto.ServerSession.getDefaultInstance();
       }
 
-      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession build() {
         com.yogi.albatross.common.server.ServerSessionProto.ServerSession result = buildPartial();
         if (!result.isInitialized()) {
@@ -802,34 +951,32 @@ public final class ServerSessionProto {
         return result;
       }
 
-      @java.lang.Override
       public com.yogi.albatross.common.server.ServerSessionProto.ServerSession buildPartial() {
         com.yogi.albatross.common.server.ServerSessionProto.ServerSession result = new com.yogi.albatross.common.server.ServerSessionProto.ServerSession(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        result.channelId_ = channelId_;
         if (sendNoAcksBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
             sendNoAcks_ = java.util.Collections.unmodifiableList(sendNoAcks_);
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000001);
           }
           result.sendNoAcks_ = sendNoAcks_;
         } else {
           result.sendNoAcks_ = sendNoAcksBuilder_.build();
         }
         if (willSendsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
             willSends_ = java.util.Collections.unmodifiableList(willSends_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.willSends_ = willSends_;
         } else {
           result.willSends_ = willSendsBuilder_.build();
         }
         if (recNoAcksBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
             recNoAcks_ = java.util.Collections.unmodifiableList(recNoAcks_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.recNoAcks_ = recNoAcks_;
         } else {
@@ -840,44 +987,41 @@ public final class ServerSessionProto {
         result.willQos_ = willQos_;
         result.willRetain_ = willRetain_;
         result.clearSession_ = clearSession_;
+        result.clientId_ = clientId_;
+        result.userId_ = userId_;
+        result.willMessage_ = willMessage_;
+        result.willTopic_ = willTopic_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
-      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
-      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
-      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
-      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
-      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
-      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
-      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.yogi.albatross.common.server.ServerSessionProto.ServerSession) {
           return mergeFrom((com.yogi.albatross.common.server.ServerSessionProto.ServerSession)other);
@@ -889,15 +1033,11 @@ public final class ServerSessionProto {
 
       public Builder mergeFrom(com.yogi.albatross.common.server.ServerSessionProto.ServerSession other) {
         if (other == com.yogi.albatross.common.server.ServerSessionProto.ServerSession.getDefaultInstance()) return this;
-        if (!other.getChannelId().isEmpty()) {
-          channelId_ = other.channelId_;
-          onChanged();
-        }
         if (sendNoAcksBuilder_ == null) {
           if (!other.sendNoAcks_.isEmpty()) {
             if (sendNoAcks_.isEmpty()) {
               sendNoAcks_ = other.sendNoAcks_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000001);
             } else {
               ensureSendNoAcksIsMutable();
               sendNoAcks_.addAll(other.sendNoAcks_);
@@ -910,7 +1050,7 @@ public final class ServerSessionProto {
               sendNoAcksBuilder_.dispose();
               sendNoAcksBuilder_ = null;
               sendNoAcks_ = other.sendNoAcks_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000001);
               sendNoAcksBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getSendNoAcksFieldBuilder() : null;
@@ -923,7 +1063,7 @@ public final class ServerSessionProto {
           if (!other.willSends_.isEmpty()) {
             if (willSends_.isEmpty()) {
               willSends_ = other.willSends_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensureWillSendsIsMutable();
               willSends_.addAll(other.willSends_);
@@ -936,7 +1076,7 @@ public final class ServerSessionProto {
               willSendsBuilder_.dispose();
               willSendsBuilder_ = null;
               willSends_ = other.willSends_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
               willSendsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getWillSendsFieldBuilder() : null;
@@ -949,7 +1089,7 @@ public final class ServerSessionProto {
           if (!other.recNoAcks_.isEmpty()) {
             if (recNoAcks_.isEmpty()) {
               recNoAcks_ = other.recNoAcks_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureRecNoAcksIsMutable();
               recNoAcks_.addAll(other.recNoAcks_);
@@ -962,7 +1102,7 @@ public final class ServerSessionProto {
               recNoAcksBuilder_.dispose();
               recNoAcksBuilder_ = null;
               recNoAcks_ = other.recNoAcks_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
               recNoAcksBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getRecNoAcksFieldBuilder() : null;
@@ -986,17 +1126,30 @@ public final class ServerSessionProto {
         if (other.getClearSession() != false) {
           setClearSession(other.getClearSession());
         }
+        if (!other.getClientId().isEmpty()) {
+          clientId_ = other.clientId_;
+          onChanged();
+        }
+        if (other.getUserId() != 0L) {
+          setUserId(other.getUserId());
+        }
+        if (!other.getWillMessage().isEmpty()) {
+          willMessage_ = other.willMessage_;
+          onChanged();
+        }
+        if (!other.getWillTopic().isEmpty()) {
+          willTopic_ = other.willTopic_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
-      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
-      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1016,81 +1169,12 @@ public final class ServerSessionProto {
       }
       private int bitField0_;
 
-      private java.lang.Object channelId_ = "";
-      /**
-       * <code>string channelId = 1;</code>
-       */
-      public java.lang.String getChannelId() {
-        java.lang.Object ref = channelId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          channelId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string channelId = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getChannelIdBytes() {
-        java.lang.Object ref = channelId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          channelId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string channelId = 1;</code>
-       */
-      public Builder setChannelId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        channelId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string channelId = 1;</code>
-       */
-      public Builder clearChannelId() {
-        
-        channelId_ = getDefaultInstance().getChannelId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string channelId = 1;</code>
-       */
-      public Builder setChannelIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        channelId_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> sendNoAcks_ =
         java.util.Collections.emptyList();
       private void ensureSendNoAcksIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
           sendNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>(sendNoAcks_);
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
          }
       }
 
@@ -1098,7 +1182,7 @@ public final class ServerSessionProto {
           com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> sendNoAcksBuilder_;
 
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getSendNoAcksList() {
         if (sendNoAcksBuilder_ == null) {
@@ -1108,7 +1192,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public int getSendNoAcksCount() {
         if (sendNoAcksBuilder_ == null) {
@@ -1118,7 +1202,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message getSendNoAcks(int index) {
         if (sendNoAcksBuilder_ == null) {
@@ -1128,7 +1212,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder setSendNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1145,7 +1229,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder setSendNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1159,7 +1243,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder addSendNoAcks(com.yogi.albatross.common.server.MessageProto.Message value) {
         if (sendNoAcksBuilder_ == null) {
@@ -1175,7 +1259,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder addSendNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1192,7 +1276,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder addSendNoAcks(
           com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1206,7 +1290,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder addSendNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1220,7 +1304,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder addAllSendNoAcks(
           java.lang.Iterable<? extends com.yogi.albatross.common.server.MessageProto.Message> values) {
@@ -1235,12 +1319,12 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder clearSendNoAcks() {
         if (sendNoAcksBuilder_ == null) {
           sendNoAcks_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
           sendNoAcksBuilder_.clear();
@@ -1248,7 +1332,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public Builder removeSendNoAcks(int index) {
         if (sendNoAcksBuilder_ == null) {
@@ -1261,14 +1345,14 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder getSendNoAcksBuilder(
           int index) {
         return getSendNoAcksFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getSendNoAcksOrBuilder(
           int index) {
@@ -1278,7 +1362,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
            getSendNoAcksOrBuilderList() {
@@ -1289,14 +1373,14 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addSendNoAcksBuilder() {
         return getSendNoAcksFieldBuilder().addBuilder(
             com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addSendNoAcksBuilder(
           int index) {
@@ -1304,7 +1388,7 @@ public final class ServerSessionProto {
             index, com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message sendNoAcks = 2;</code>
+       * <code>repeated .Message sendNoAcks = 1;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message.Builder> 
            getSendNoAcksBuilderList() {
@@ -1317,7 +1401,7 @@ public final class ServerSessionProto {
           sendNoAcksBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder>(
                   sendNoAcks_,
-                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
                   isClean());
           sendNoAcks_ = null;
@@ -1328,9 +1412,9 @@ public final class ServerSessionProto {
       private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> willSends_ =
         java.util.Collections.emptyList();
       private void ensureWillSendsIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
           willSends_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>(willSends_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
          }
       }
 
@@ -1338,7 +1422,7 @@ public final class ServerSessionProto {
           com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> willSendsBuilder_;
 
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getWillSendsList() {
         if (willSendsBuilder_ == null) {
@@ -1348,7 +1432,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public int getWillSendsCount() {
         if (willSendsBuilder_ == null) {
@@ -1358,7 +1442,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message getWillSends(int index) {
         if (willSendsBuilder_ == null) {
@@ -1368,7 +1452,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder setWillSends(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1385,7 +1469,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder setWillSends(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1399,7 +1483,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder addWillSends(com.yogi.albatross.common.server.MessageProto.Message value) {
         if (willSendsBuilder_ == null) {
@@ -1415,7 +1499,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder addWillSends(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1432,7 +1516,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder addWillSends(
           com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1446,7 +1530,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder addWillSends(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1460,7 +1544,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder addAllWillSends(
           java.lang.Iterable<? extends com.yogi.albatross.common.server.MessageProto.Message> values) {
@@ -1475,12 +1559,12 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder clearWillSends() {
         if (willSendsBuilder_ == null) {
           willSends_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           willSendsBuilder_.clear();
@@ -1488,7 +1572,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public Builder removeWillSends(int index) {
         if (willSendsBuilder_ == null) {
@@ -1501,14 +1585,14 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder getWillSendsBuilder(
           int index) {
         return getWillSendsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getWillSendsOrBuilder(
           int index) {
@@ -1518,7 +1602,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
            getWillSendsOrBuilderList() {
@@ -1529,14 +1613,14 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addWillSendsBuilder() {
         return getWillSendsFieldBuilder().addBuilder(
             com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addWillSendsBuilder(
           int index) {
@@ -1544,7 +1628,7 @@ public final class ServerSessionProto {
             index, com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message willSends = 3;</code>
+       * <code>repeated .Message willSends = 2;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message.Builder> 
            getWillSendsBuilderList() {
@@ -1557,7 +1641,7 @@ public final class ServerSessionProto {
           willSendsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder>(
                   willSends_,
-                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
                   isClean());
           willSends_ = null;
@@ -1568,9 +1652,9 @@ public final class ServerSessionProto {
       private java.util.List<com.yogi.albatross.common.server.MessageProto.Message> recNoAcks_ =
         java.util.Collections.emptyList();
       private void ensureRecNoAcksIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
           recNoAcks_ = new java.util.ArrayList<com.yogi.albatross.common.server.MessageProto.Message>(recNoAcks_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
          }
       }
 
@@ -1578,7 +1662,7 @@ public final class ServerSessionProto {
           com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> recNoAcksBuilder_;
 
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message> getRecNoAcksList() {
         if (recNoAcksBuilder_ == null) {
@@ -1588,7 +1672,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public int getRecNoAcksCount() {
         if (recNoAcksBuilder_ == null) {
@@ -1598,7 +1682,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message getRecNoAcks(int index) {
         if (recNoAcksBuilder_ == null) {
@@ -1608,7 +1692,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder setRecNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1625,7 +1709,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder setRecNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1639,7 +1723,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder addRecNoAcks(com.yogi.albatross.common.server.MessageProto.Message value) {
         if (recNoAcksBuilder_ == null) {
@@ -1655,7 +1739,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder addRecNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message value) {
@@ -1672,7 +1756,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder addRecNoAcks(
           com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1686,7 +1770,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder addRecNoAcks(
           int index, com.yogi.albatross.common.server.MessageProto.Message.Builder builderForValue) {
@@ -1700,7 +1784,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder addAllRecNoAcks(
           java.lang.Iterable<? extends com.yogi.albatross.common.server.MessageProto.Message> values) {
@@ -1715,12 +1799,12 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder clearRecNoAcks() {
         if (recNoAcksBuilder_ == null) {
           recNoAcks_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
           recNoAcksBuilder_.clear();
@@ -1728,7 +1812,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public Builder removeRecNoAcks(int index) {
         if (recNoAcksBuilder_ == null) {
@@ -1741,14 +1825,14 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder getRecNoAcksBuilder(
           int index) {
         return getRecNoAcksFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.MessageOrBuilder getRecNoAcksOrBuilder(
           int index) {
@@ -1758,7 +1842,7 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public java.util.List<? extends com.yogi.albatross.common.server.MessageProto.MessageOrBuilder> 
            getRecNoAcksOrBuilderList() {
@@ -1769,14 +1853,14 @@ public final class ServerSessionProto {
         }
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addRecNoAcksBuilder() {
         return getRecNoAcksFieldBuilder().addBuilder(
             com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public com.yogi.albatross.common.server.MessageProto.Message.Builder addRecNoAcksBuilder(
           int index) {
@@ -1784,7 +1868,7 @@ public final class ServerSessionProto {
             index, com.yogi.albatross.common.server.MessageProto.Message.getDefaultInstance());
       }
       /**
-       * <code>repeated .Message recNoAcks = 4;</code>
+       * <code>repeated .Message recNoAcks = 3;</code>
        */
       public java.util.List<com.yogi.albatross.common.server.MessageProto.Message.Builder> 
            getRecNoAcksBuilderList() {
@@ -1797,7 +1881,7 @@ public final class ServerSessionProto {
           recNoAcksBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.yogi.albatross.common.server.MessageProto.Message, com.yogi.albatross.common.server.MessageProto.Message.Builder, com.yogi.albatross.common.server.MessageProto.MessageOrBuilder>(
                   recNoAcks_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  ((bitField0_ & 0x00000004) == 0x00000004),
                   getParentForChildren(),
                   isClean());
           recNoAcks_ = null;
@@ -1807,13 +1891,13 @@ public final class ServerSessionProto {
 
       private long keepLiveSecond_ ;
       /**
-       * <code>int64 keepLiveSecond = 5;</code>
+       * <code>int64 keepLiveSecond = 4;</code>
        */
       public long getKeepLiveSecond() {
         return keepLiveSecond_;
       }
       /**
-       * <code>int64 keepLiveSecond = 5;</code>
+       * <code>int64 keepLiveSecond = 4;</code>
        */
       public Builder setKeepLiveSecond(long value) {
         
@@ -1822,7 +1906,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>int64 keepLiveSecond = 5;</code>
+       * <code>int64 keepLiveSecond = 4;</code>
        */
       public Builder clearKeepLiveSecond() {
         
@@ -1833,13 +1917,13 @@ public final class ServerSessionProto {
 
       private int willFalg_ ;
       /**
-       * <code>int32 willFalg = 6;</code>
+       * <code>int32 willFalg = 5;</code>
        */
       public int getWillFalg() {
         return willFalg_;
       }
       /**
-       * <code>int32 willFalg = 6;</code>
+       * <code>int32 willFalg = 5;</code>
        */
       public Builder setWillFalg(int value) {
         
@@ -1848,7 +1932,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>int32 willFalg = 6;</code>
+       * <code>int32 willFalg = 5;</code>
        */
       public Builder clearWillFalg() {
         
@@ -1859,13 +1943,13 @@ public final class ServerSessionProto {
 
       private int willQos_ ;
       /**
-       * <code>int32 willQos = 7;</code>
+       * <code>int32 willQos = 6;</code>
        */
       public int getWillQos() {
         return willQos_;
       }
       /**
-       * <code>int32 willQos = 7;</code>
+       * <code>int32 willQos = 6;</code>
        */
       public Builder setWillQos(int value) {
         
@@ -1874,7 +1958,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>int32 willQos = 7;</code>
+       * <code>int32 willQos = 6;</code>
        */
       public Builder clearWillQos() {
         
@@ -1885,13 +1969,13 @@ public final class ServerSessionProto {
 
       private int willRetain_ ;
       /**
-       * <code>int32 willRetain = 8;</code>
+       * <code>int32 willRetain = 7;</code>
        */
       public int getWillRetain() {
         return willRetain_;
       }
       /**
-       * <code>int32 willRetain = 8;</code>
+       * <code>int32 willRetain = 7;</code>
        */
       public Builder setWillRetain(int value) {
         
@@ -1900,7 +1984,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>int32 willRetain = 8;</code>
+       * <code>int32 willRetain = 7;</code>
        */
       public Builder clearWillRetain() {
         
@@ -1911,13 +1995,13 @@ public final class ServerSessionProto {
 
       private boolean clearSession_ ;
       /**
-       * <code>bool clearSession = 9;</code>
+       * <code>bool clearSession = 8;</code>
        */
       public boolean getClearSession() {
         return clearSession_;
       }
       /**
-       * <code>bool clearSession = 9;</code>
+       * <code>bool clearSession = 8;</code>
        */
       public Builder setClearSession(boolean value) {
         
@@ -1926,7 +2010,7 @@ public final class ServerSessionProto {
         return this;
       }
       /**
-       * <code>bool clearSession = 9;</code>
+       * <code>bool clearSession = 8;</code>
        */
       public Builder clearClearSession() {
         
@@ -1934,13 +2018,244 @@ public final class ServerSessionProto {
         onChanged();
         return this;
       }
-      @java.lang.Override
+
+      private java.lang.Object clientId_ = "";
+      /**
+       * <code>string clientId = 9;</code>
+       */
+      public java.lang.String getClientId() {
+        java.lang.Object ref = clientId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          clientId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string clientId = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getClientIdBytes() {
+        java.lang.Object ref = clientId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          clientId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string clientId = 9;</code>
+       */
+      public Builder setClientId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        clientId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string clientId = 9;</code>
+       */
+      public Builder clearClientId() {
+        
+        clientId_ = getDefaultInstance().getClientId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string clientId = 9;</code>
+       */
+      public Builder setClientIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        clientId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long userId_ ;
+      /**
+       * <code>int64 userId = 10;</code>
+       */
+      public long getUserId() {
+        return userId_;
+      }
+      /**
+       * <code>int64 userId = 10;</code>
+       */
+      public Builder setUserId(long value) {
+        
+        userId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 userId = 10;</code>
+       */
+      public Builder clearUserId() {
+        
+        userId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object willMessage_ = "";
+      /**
+       * <code>string willMessage = 11;</code>
+       */
+      public java.lang.String getWillMessage() {
+        java.lang.Object ref = willMessage_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          willMessage_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string willMessage = 11;</code>
+       */
+      public com.google.protobuf.ByteString
+          getWillMessageBytes() {
+        java.lang.Object ref = willMessage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          willMessage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string willMessage = 11;</code>
+       */
+      public Builder setWillMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        willMessage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string willMessage = 11;</code>
+       */
+      public Builder clearWillMessage() {
+        
+        willMessage_ = getDefaultInstance().getWillMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string willMessage = 11;</code>
+       */
+      public Builder setWillMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        willMessage_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object willTopic_ = "";
+      /**
+       * <code>string willTopic = 12;</code>
+       */
+      public java.lang.String getWillTopic() {
+        java.lang.Object ref = willTopic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          willTopic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string willTopic = 12;</code>
+       */
+      public com.google.protobuf.ByteString
+          getWillTopicBytes() {
+        java.lang.Object ref = willTopic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          willTopic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string willTopic = 12;</code>
+       */
+      public Builder setWillTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        willTopic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string willTopic = 12;</code>
+       */
+      public Builder clearWillTopic() {
+        
+        willTopic_ = getDefaultInstance().getWillTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string willTopic = 12;</code>
+       */
+      public Builder setWillTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        willTopic_ = value;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
       }
 
-      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1962,7 +2277,6 @@ public final class ServerSessionProto {
 
     private static final com.google.protobuf.Parser<ServerSession>
         PARSER = new com.google.protobuf.AbstractParser<ServerSession>() {
-      @java.lang.Override
       public ServerSession parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1980,7 +2294,6 @@ public final class ServerSessionProto {
       return PARSER;
     }
 
-    @java.lang.Override
     public com.yogi.albatross.common.server.ServerSessionProto.ServerSession getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -2001,15 +2314,16 @@ public final class ServerSessionProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024server_session.proto\032\rmessage.proto\"\337\001" +
-      "\n\rServerSession\022\021\n\tchannelId\030\001 \001(\t\022\034\n\nse" +
-      "ndNoAcks\030\002 \003(\0132\010.Message\022\033\n\twillSends\030\003 " +
-      "\003(\0132\010.Message\022\033\n\trecNoAcks\030\004 \003(\0132\010.Messa" +
-      "ge\022\026\n\016keepLiveSecond\030\005 \001(\003\022\020\n\010willFalg\030\006" +
-      " \001(\005\022\017\n\007willQos\030\007 \001(\005\022\022\n\nwillRetain\030\010 \001(" +
-      "\005\022\024\n\014clearSession\030\t \001(\010B6\n com.yogi.alba" +
-      "tross.common.serverB\022ServerSessionProtob" +
-      "\006proto3"
+      "\n\024server_session.proto\032\rmessage.proto\"\226\002" +
+      "\n\rServerSession\022\034\n\nsendNoAcks\030\001 \003(\0132\010.Me" +
+      "ssage\022\033\n\twillSends\030\002 \003(\0132\010.Message\022\033\n\tre" +
+      "cNoAcks\030\003 \003(\0132\010.Message\022\026\n\016keepLiveSecon" +
+      "d\030\004 \001(\003\022\020\n\010willFalg\030\005 \001(\005\022\017\n\007willQos\030\006 \001" +
+      "(\005\022\022\n\nwillRetain\030\007 \001(\005\022\024\n\014clearSession\030\010" +
+      " \001(\010\022\020\n\010clientId\030\t \001(\t\022\016\n\006userId\030\n \001(\003\022\023" +
+      "\n\013willMessage\030\013 \001(\t\022\021\n\twillTopic\030\014 \001(\tB6" +
+      "\n com.yogi.albatross.common.serverB\022Serv" +
+      "erSessionProtob\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2029,7 +2343,7 @@ public final class ServerSessionProto {
     internal_static_ServerSession_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ServerSession_descriptor,
-        new java.lang.String[] { "ChannelId", "SendNoAcks", "WillSends", "RecNoAcks", "KeepLiveSecond", "WillFalg", "WillQos", "WillRetain", "ClearSession", });
+        new java.lang.String[] { "SendNoAcks", "WillSends", "RecNoAcks", "KeepLiveSecond", "WillFalg", "WillQos", "WillRetain", "ClearSession", "ClientId", "UserId", "WillMessage", "WillTopic", });
     com.yogi.albatross.common.server.MessageProto.getDescriptor();
   }
 

@@ -29,11 +29,11 @@ public class TopicDao {
      * 保存主题。返回保存失败的主题
      *
      * @param topicNames
-     * @param currentUser
+     * @param clientId
      * @param qoss
      * @return
      */
-    public boolean saveOrSubscribe(List<String> topicNames, Long currentUser, List<SubscribeQos> qoss) {
+    public boolean saveOrSubscribe(List<String> topicNames, String clientId, List<SubscribeQos> qoss) {
         ResultSet topicResultSet =null;
         ResultSet subscribeResultSet=null;
         try {
@@ -54,7 +54,7 @@ public class TopicDao {
                     if (!exsitsTopic.contains(topicName)) {
                         topicSb.append(SqlUtils.LEFT_CLOSE);
                         topicSb.append(SqlUtils.CHAR_HOLDER).append(topicNames.get(i)).append(SqlUtils.CHAR_HOLDER);
-                        topicSb.append(SqlUtils.CHAR_HOLDER).append(currentUser).append(SqlUtils.CHAR_HOLDER);
+                        topicSb.append(SqlUtils.CHAR_HOLDER).append(clientId).append(SqlUtils.CHAR_HOLDER);
                         topicSb.append(SqlUtils.RIGHT_CLOSE);
                         if (i != size - 1) {
                             topicSb.append(SqlUtils.SEPARATOR);
@@ -66,7 +66,7 @@ public class TopicDao {
 
             //subscribe
             List<String> existSubscribes =Lists.newArrayList();
-            subscribeResultSet = DbUtils.select(String.format(SELECT_SUBSCRIBE,SqlUtils.getINSql("topicName", topicNames)), currentUser);
+            subscribeResultSet = DbUtils.select(String.format(SELECT_SUBSCRIBE,SqlUtils.getINSql("topicName", topicNames)), clientId);
             while (Objects.nonNull(subscribeResultSet) && subscribeResultSet.next()){
                 existSubscribes.add(subscribeResultSet.getString("topicName"));
             }
@@ -81,7 +81,7 @@ public class TopicDao {
                     }
                     newSb.append(SqlUtils.LEFT_CLOSE);
                     newSb.append(SqlUtils.CHAR_HOLDER).append(notExistSubcribe.get(i)).append(SqlUtils.CHAR_HOLDER).append(SqlUtils.SEPARATOR);
-                    newSb.append(SqlUtils.CHAR_HOLDER).append(currentUser).append(SqlUtils.CHAR_HOLDER).append(SqlUtils.SEPARATOR);
+                    newSb.append(SqlUtils.CHAR_HOLDER).append(clientId).append(SqlUtils.CHAR_HOLDER).append(SqlUtils.SEPARATOR);
                     newSb.append(SqlUtils.CHAR_HOLDER).append(qoss.get(i).getCode()).append(SqlUtils.CHAR_HOLDER);
                     newSb.append(SqlUtils.RIGHT_CLOSE);
                 }

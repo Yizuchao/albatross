@@ -1,12 +1,10 @@
 package com.yogi.albatross.decoder;
 
-import com.google.protobuf.ByteString;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.common.base.MqttChannel;
 import com.yogi.albatross.common.base.PublishMsgChannelPromise;
 import com.yogi.albatross.common.base.PublishResponseChannelPromise;
-import com.yogi.albatross.common.server.MessageProto;
 import com.yogi.albatross.common.server.ServerTopics;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
@@ -17,7 +15,6 @@ import com.yogi.albatross.db.message.dao.MessageDao;
 import com.yogi.albatross.db.message.entity.Message;
 import com.yogi.albatross.request.PublishRequest;
 import com.yogi.albatross.utils.CollectionUtils;
-import com.yogi.albatross.utils.MessageIdGenerateUtils;
 import com.yogi.albatross.utils.ThreadPoolUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -107,7 +104,8 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     }
     public void sendMsg(String topicOrQueueName,ByteBuf publishData,AbstractMqttChannelHandlerContext ctx,byte[] response){
         ThreadPoolUtils.execute(()->{
-            persistenceAndResponse(publishData.array(),ctx,response);
+            byte[] content=publishData.array();
+            Long messageId = persistenceAndResponse(content, ctx, response);
 
             List<MqttChannel> channels = ServerTopics.searchSubscriber(topicOrQueueName);
             if(CollectionUtils.isEmpty(channels)){
@@ -119,27 +117,19 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
             }
             for (MqttChannel mqttChannel:channels){
                 publishData.readerIndex(0);
-                mqttChannel.writeAndFlush(publishData,new PublishMsgChannelPromise(mqttChannel));
+                mqttChannel.writeAndFlush(publishData,new PublishMsgChannelPromise(mqttChannel,messageId,ctx.getClientId(),content));
             }
         });
     }
 
-    private void persistenceAndResponse(byte[] content,AbstractMqttChannelHandlerContext ctx,byte[] response){
+    private Long persistenceAndResponse(byte[] content,AbstractMqttChannelHandlerContext ctx,byte[] response){
         Message message=new Message();
         message.setContent(content);
         message.setSended(Status.OK);
-        messageDao.save(message);
+        Long messageId = messageDao.save(message);
 
-        ByteBuf respByteBuf = PooledByteBufAllocator.DEFAULT.directBuffer(response.length).writeBytes(response);
-        ctx.writeAndFlush(respByteBuf,new PublishResponseChannelPromise(ctx.channel()));
-    }
-
-    private MessageProto.Message getMessage(byte[] content,boolean isTopic,String currentUser){
-        MessageProto.Message.Builder builder=MessageProto.Message.newBuilder();
-        builder.setMessageId(MessageIdGenerateUtils.messageId());
-        builder.setContent(ByteString.copyFrom(content));
-        builder.setType(isTopic?MessageProto.Message.Type.TOPIC:MessageProto.Message.Type.QUEUE);
-        builder.setFrom(currentUser);
-        return builder.build();
+        ctx.writeAndFlush(PooledByteBufAllocator.DEFAULT.directBuffer(response.length).writeBytes(response),
+                new PublishResponseChannelPromise(ctx.channel()));
+        return messageId;
     }
 }

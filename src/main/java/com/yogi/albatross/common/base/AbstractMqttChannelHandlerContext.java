@@ -2,8 +2,8 @@ package com.yogi.albatross.common.base;
 
 
 import com.yogi.albatross.db.DaoManager;
-import com.yogi.albatross.db.server.dao.UserSessionDao;
-import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.db.server.dao.SessionDao;
+import com.yogi.albatross.db.server.entity.Session;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -13,26 +13,26 @@ import org.apache.commons.lang3.math.NumberUtils;
 public abstract class AbstractMqttChannelHandlerContext {
     private final ChannelHandlerContext ctx;
     private final MqttChannel channel;
-    private UserSessionDao userSessionDao;
+    private SessionDao sessionDao;
 
     protected AbstractMqttChannelHandlerContext(ChannelHandlerContext ctx) {
         this.ctx = ctx;
         this.channel = new MqttChannel(ctx.channel());
-        this.userSessionDao = DaoManager.getDao(UserSessionDao.class);
+        this.sessionDao = DaoManager.getDao(SessionDao.class);
 
     }
 
     public ChannelFuture close() {
-        UserSession userSession = channel.getUserSession();
-        if (userSession != null) {
-            boolean saveSession = !userSession.getServerSession().getClearSession();
+        Session session = channel.getSession();
+        if (session != null) {
+            boolean saveSession = !session.getServerSession().getClearSession();
             if (saveSession) {
-                userSessionDao.saveOrUpdateSession(userSession);
+                sessionDao.saveOrUpdateSession(session);
             }
-            if (userSession.getServerSession().getWillFalg() == NumberUtils.INTEGER_ONE) {
+            if (session.getServerSession().getWillFalg() == NumberUtils.INTEGER_ONE) {
                 //TODO publish will  message
-                if (!saveSession && userSession.getServerSession().getWillRetain() != NumberUtils.INTEGER_ONE) {//not specify to retain will,then clear will
-                    clearWill(userSession);
+                if (!saveSession && session.getServerSession().getWillRetain() != NumberUtils.INTEGER_ONE) {//not specify to retain will,then clear will
+                    sessionDao.clearWill(session);
                 }
             }
         }
@@ -47,12 +47,6 @@ public abstract class AbstractMqttChannelHandlerContext {
         return ctx.pipeline();
     }
 
-    private boolean clearWill(UserSession userSession) {
-        userSession.setWillTopic(null);
-        userSession.setWillMessage(null);
-        userSessionDao.clearWill(userSession.getUserId());
-        return true;
-    }
     public ChannelFuture writeAndFlush(Object msg){
         return ctx.writeAndFlush(msg);
     }
@@ -61,7 +55,11 @@ public abstract class AbstractMqttChannelHandlerContext {
         return ctx.writeAndFlush(msg,promise);
     }
 
-    public Long getCurrentUserId(){
-        return channel.getCurrentUserId();
+    public String getClientId(){
+        return channel.clientId();
+    }
+
+    public String clientId(){
+        return channel.clientId();
     }
 }

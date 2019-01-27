@@ -17,13 +17,13 @@ public class DbUtils {
         return getStatement(sql, params).executeQuery();
     }
 
-    public static List<Integer> insert(String sql, Object... params) throws Exception {
+    public static List<Long> insert(String sql, Object... params) throws Exception {
         PreparedStatement statement = getStatement(sql, true, params);
         if (Objects.nonNull(statement) && statement.executeUpdate() > 0) {
             ResultSet keys = statement.getGeneratedKeys();
-            List<Integer> ids = Lists.newArrayList();
+            List<Long> ids = Lists.newArrayList();
             while (keys != null && keys.next()) {
-                ids.add(keys.getInt(NumberUtils.INTEGER_ONE));
+                ids.add(keys.getLong(NumberUtils.INTEGER_ONE));
             }
             return ids;
         }

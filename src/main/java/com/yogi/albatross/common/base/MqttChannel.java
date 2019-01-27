@@ -1,6 +1,6 @@
 package com.yogi.albatross.common.base;
 
-import com.yogi.albatross.db.server.entity.UserSession;
+import com.yogi.albatross.db.server.entity.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelPromise;
@@ -20,9 +20,12 @@ public final class MqttChannel {
         this.parent = parent;
     }
 
-    public UserSession getUserSession() {
-        Attribute<UserSession> attr = parent.attr(AttributeKey.valueOf(this.id().asLongText()));
+    public Session getSession() {
+        Attribute<Session> attr = parent.attr(AttributeKey.valueOf(clientId()));
         return attr.get();
+    }
+    public ChannelId channelId(){
+        return parent.id();
     }
 
     public void writeAndFlush(Object o, ChannelPromise promise){
@@ -33,27 +36,16 @@ public final class MqttChannel {
         parent.writeAndFlush(o);
     }
 
-    public ChannelId id(){
-        return parent.id();
+    public String clientId(){
+        return getSession().getServerSession().getClientId();
     }
 
     public <T> Attribute<T> attr(AttributeKey<T> key){
         return parent.attr(key);
     }
 
-    public Long getCurrentUserId(){
-        UserSession userSession = getUserSession();
-        if(Objects.nonNull(userSession)){
-            return userSession.getUserId();
-        }
-        return null;
-    }
     protected Channel channel(){
         return parent;
-    }
-
-    public void setParent(Channel parent) {
-        this.parent = parent;
     }
 
     public void setUnscribed(boolean unscribed) {

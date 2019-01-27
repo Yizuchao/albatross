@@ -2,18 +2,20 @@ package com.yogi.albatross.utils;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadPoolUtils {
     private static ThreadPoolExecutor excutor=null;
+    private static ScheduledThreadPoolExecutor deplayExcutor=null;
+    private static int availableProcessors=Runtime.getRuntime().availableProcessors();
 
     static {
-        excutor=new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()*2,
-                Integer.MAX_VALUE,10, TimeUnit.SECONDS,new LinkedBlockingDeque<>(),new DefaultThreadFactory());
+        excutor=new ThreadPoolExecutor(availableProcessors,
+                availableProcessors*2,10, TimeUnit.SECONDS,new LinkedBlockingDeque<>(),
+                new DefaultThreadFactory("publish-message-threadpool-"));
+        deplayExcutor=new ScheduledThreadPoolExecutor(1,
+                new DefaultThreadFactory("delay-message-threadpool-"));
     }
 
     public static void execute(Runnable r){
@@ -26,17 +28,20 @@ public class ThreadPoolUtils {
         });
     }
 
+    public static void deplayExcute(Runnable r,long delaySeconds){
+        deplayExcutor.schedule(r,delaySeconds,TimeUnit.SECONDS);
+    }
 
     private static class DefaultThreadFactory implements ThreadFactory{
         private final String defaultPrefix;
         private final ThreadGroup group;
         private final AtomicInteger threadNumber=new AtomicInteger(NumberUtils.INTEGER_ONE);
 
-        public DefaultThreadFactory() {
+        public DefaultThreadFactory(String defaultPrefix) {
             SecurityManager s = System.getSecurityManager();
             group = (s != null) ? s.getThreadGroup() :
                     Thread.currentThread().getThreadGroup();
-            defaultPrefix="custompool-thread-";
+            this.defaultPrefix=defaultPrefix;
         }
 
         @Override

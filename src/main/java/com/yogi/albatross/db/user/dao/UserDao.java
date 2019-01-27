@@ -49,16 +49,16 @@ public class UserDao {
         }
         return null;
     }
-    public Integer insert(String username,String password){
+    public Long insert(String username,String password){
         try{
-            List<Integer> ids = DbUtils.insert(String.format(INSERT, username, MD5Utils.encode(password)));
+            List<Long> ids = DbUtils.insert(String.format(INSERT, username, MD5Utils.encode(password)));
             if(!CollectionUtils.isEmpty(ids)){
                 return ids.get(NumberUtils.INTEGER_ZERO);
             }
         }catch (Exception e){
             logger.error(e.getMessage(),e);
         }
-        return NumberUtils.INTEGER_ZERO;
+        return NumberUtils.LONG_ZERO;
     }
     public Integer updateLastLoginTime(String username){
         try{

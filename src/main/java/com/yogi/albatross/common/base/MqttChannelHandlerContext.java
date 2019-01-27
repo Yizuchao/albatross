@@ -28,7 +28,7 @@ public class MqttChannelHandlerContext extends AbstractMqttChannelHandlerContext
 
     @Override
     public ChannelFuture close() {
-        mqttCtxs.remove(this.channel().id());
+        mqttCtxs.remove(this.channel().channelId());
         return super.close();
     }
 }
