@@ -143,8 +143,8 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
                 bs[2]=0x00;
                 bs[3]=request.getAck().getCode();
             }else {
-                if(StringUtils.isEmpty(request.getUsername())){
-                    //TODO 是否支持匿名链接？
+                if(!Constants.ANONYMOUSE_SUPPORT && StringUtils.isEmpty(request.getUsername())){
+                    return null;
                 }
                 if(request.getClearSession()){//清除session
                     clearSession(ctx,request.getClientId());
