@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.common.server.ServerTopics;
-import com.yogi.albatross.constants.common.SubscribeQos;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
+import com.yogi.albatross.constants.common.SubscribeQos;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.topic.dao.TopicDao;
 import com.yogi.albatross.request.SubscribeRequest;
@@ -73,8 +73,12 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
         bytes[index++]=(byte) (subscribeRequest.getPacketId() & 0x00ff);
 
         //topic qos reponse
-        for (int i=0;i<topicsSize;i++) {//服务端可以授予客户端比客户端要求的qos的更低的qos；同时这里可以异步写response。这里就默认返回客户端要求的qos了。后面可以完善 //TODO
-            bytes[index++]=saveSuccess?(byte) subscribeRequest.getQos().get(i).getCode():(byte) 0x80;
+        for (int i=0;i<topicsSize;i++) {//服务端可以授予客户端比客户端要求的qos的更低的qos；优化点：这里可以异步写response。
+            SubscribeQos qos=subscribeRequest.getQos().get(i);
+            if(SubscribeQos.TWO.equals(qos)){//暂不支持qos为2
+                qos=SubscribeQos.ONE;
+            }
+            bytes[index++]=saveSuccess?(byte) qos.getCode():(byte) 0x80;
         }
         return bytes;
     }

@@ -26,9 +26,6 @@ public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeRequest>{
 
     @Override
     public byte[] response(AbstractMqttChannelHandlerContext ctx, UnsubscribeRequest unsubscribeRequest) throws Exception {
-        //TODO 它必须停止分发任何新消息给这个客户端
-        //它必须完成分发任何已经开始往客户端发送的QoS 1和QoS 2的消息
-        //它可以继续发送任何现存的准备分发给客户端的缓存消息
         ctx.channel().setUnscribed(true);
         byte[] bytes=new byte[4];
         bytes[0]=(byte)0xb0;
