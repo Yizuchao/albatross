@@ -3,6 +3,7 @@ package com.yogi.albatross.common.server;
 import com.google.common.collect.Lists;
 import com.yogi.albatross.common.base.MqttChannel;
 import com.yogi.albatross.utils.CollectionUtils;
+import org.apache.commons.lang3.CharUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,11 @@ import java.util.stream.Collectors;
  * 主题详细匹配规则[4.7.1]：https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/04-OperationalBehavior.html
  */
 public class ServerTopics {
+    private static final char PATH_SEPARATOR='/';
+    private static final char SINGLE_LEVEL='+';
+    private static final char MULTI_LEVEL='#';
+    private static final char SYS_RETAIN='$';
+    private static final char SPACE=' ';
     private static final TopicTrie trie = new TopicTrie();
     /**
      * @param subscribeTopic       此时topic可包含特殊字符
@@ -67,11 +73,11 @@ public class ServerTopics {
             for (int i = 97; i < 122; i++) {
                 roots[i - 61] = new Node((char) i);
             }
-            roots[62] = new Node(' ');
-            roots[63] = new Node('$');
-            roots[64] = new Node('#');
-            roots[65] = new Node('+');
-            roots[66] = new Node('/');
+            roots[62] = new Node(SPACE);
+            roots[63] = new Node(SYS_RETAIN);
+            roots[64] = new Node(MULTI_LEVEL);
+            roots[65] = new Node(SINGLE_LEVEL);
+            roots[66] = new Node(PATH_SEPARATOR);
         }
 
         public boolean add(String topic, MqttChannel mqttChannel) {
@@ -109,10 +115,10 @@ public class ServerTopics {
 
         private boolean validAddTopic(char[] cs){
             for (int i = 0; i < cs.length; i++) {
-                if(cs[i]=='$'){//'$'只能系统使用
+                if(cs[i]==SYS_RETAIN){//'$'只能系统使用
                     return false;
                 }
-                if(i<cs.length-1 && cs[i]!='/' && cs[i+1]=='#'){
+                if(i<cs.length-1 && cs[i]!=PATH_SEPARATOR && cs[i+1]==MULTI_LEVEL){
                     return false;
                 }
             }
@@ -123,7 +129,7 @@ public class ServerTopics {
          * '#'保存了订阅所有主题的channel
          */
         private List<MqttChannel> getPound(){
-            return roots[getRootIndex('#')].getChannels();
+            return roots[getRootIndex(MULTI_LEVEL)].getChannels();
         }
 
         public List<MqttChannel> searchChannels(String topic){
@@ -144,10 +150,10 @@ public class ServerTopics {
                 CollectionUtils.addAll(channels,getSeparatorPound(rootNode));
                 return channels;
             }
-            Node plusRootNextLevelNode=roots[getRootIndex('+')].getNext('/');
+            Node plusRootNextLevelNode=roots[getRootIndex(SINGLE_LEVEL)].getNext(PATH_SEPARATOR);
             if(Objects.nonNull(plusRootNextLevelNode)){
                 for (int i = 0; i < cs.length; i++) {
-                    if(cs[i]=='/'){
+                    if(cs[i]==PATH_SEPARATOR){
                         CollectionUtils.addAll(channels,searchChannels(plusRootNextLevelNode,cs,i));
                         break;
                     }
@@ -163,25 +169,25 @@ public class ServerTopics {
             List<MqttChannel> channels=Lists.newArrayList();
             Node preSimgleLevelMatchNode=null;
             for (int i = start; i < topicArr.length; i++) {
-                if(topicArr[i]=='/'){
+                if(topicArr[i]==PATH_SEPARATOR){
                     if(Objects.nonNull(preSimgleLevelMatchNode)){
                         if(i==topicArr.length-1){
-                            CollectionUtils.addAll(channels,preSimgleLevelMatchNode.getNextChannel('/'));
+                            CollectionUtils.addAll(channels,preSimgleLevelMatchNode.getNextChannel(PATH_SEPARATOR));
                         }else {
                             CollectionUtils.addAll(channels,searchChannels(preSimgleLevelMatchNode.skipToNextLevelStart(topicArr[i+1]),topicArr,i+1));
                         }
                     }
                     if(Objects.nonNull(startNode)){
-                        CollectionUtils.addAll(channels,startNode.getNextChannel('#'));
-                        preSimgleLevelMatchNode=startNode.getNext('+');
+                        CollectionUtils.addAll(channels,startNode.getNextChannel(MULTI_LEVEL));
+                        preSimgleLevelMatchNode=startNode.getNext(SINGLE_LEVEL);
                     }
                 }
                 if(i==topicArr.length-1){
                     if(Objects.nonNull(startNode)){
                         CollectionUtils.addAll(channels,startNode.getChannels());
                         CollectionUtils.addAll(channels,getSeparatorPound(startNode));
-                        if(topicArr[i]=='/'){
-                            CollectionUtils.addAll(channels,startNode.getNextChannel('+'));
+                        if(topicArr[i]==PATH_SEPARATOR){
+                            CollectionUtils.addAll(channels,startNode.getNextChannel(SINGLE_LEVEL));
                         }
                     }
                     if(Objects.nonNull(preSimgleLevelMatchNode)){
@@ -198,11 +204,11 @@ public class ServerTopics {
             return channels;
         }
         private List<MqttChannel> getSeparatorPound(Node node){
-            Node separatorNode=node.getNext('/');
+            Node separatorNode=node.getNext(PATH_SEPARATOR);
             if(Objects.isNull(separatorNode)){
                 return null;
             }
-            Node poundNode = separatorNode.getNext('#');
+            Node poundNode = separatorNode.getNext(MULTI_LEVEL);
             if(Objects.isNull(poundNode)){
                 return null;
             }
@@ -218,19 +224,19 @@ public class ServerTopics {
             if (c > 47 && c < 58) {
                 return c - 48;
             }
-            if (c == ' ') {
+            if (c == SPACE) {
                 return 62;
             }
-            if (c == '$') {
+            if (c == SYS_RETAIN) {
                 return 63;
             }
-            if (c == '#') {
+            if (c == MULTI_LEVEL) {
                 return 64;
             }
-            if (c == '+') {
+            if (c == SINGLE_LEVEL) {
                 return 65;
             }
-            if(c == '/'){
+            if(c == PATH_SEPARATOR){
                 return 66;
             }
             return -1;
@@ -258,7 +264,7 @@ public class ServerTopics {
                 return channels;
             }
             public Node skipToNextLevelStart(char nextLevelStartChar){
-                Node levelNode = this.getNext('/');
+                Node levelNode = this.getNext(PATH_SEPARATOR);
                 if(Objects.nonNull(levelNode)){
                     return levelNode.getNext(nextLevelStartChar);
                 }

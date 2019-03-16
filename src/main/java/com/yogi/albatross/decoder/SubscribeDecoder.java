@@ -9,7 +9,7 @@ import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.constants.common.SubscribeQos;
 import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.topic.dao.TopicDao;
-import com.yogi.albatross.request.SubscribeRequest;
+import com.yogi.albatross.command.SubscribeCommand;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MQTTUtils;
 import io.netty.buffer.ByteBuf;
@@ -18,7 +18,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.List;
 
 @Processor(targetType = FixedHeadType.SUBSCRIBE)
-public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
+public class SubscribeDecoder extends DecoderAdapter<SubscribeCommand> {
     private TopicDao topicDao;
 
     public SubscribeDecoder() {
@@ -26,9 +26,9 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
     }
 
     @Override
-    protected SubscribeRequest process0(MqttCommand packet) throws Exception {
+    protected SubscribeCommand process0(MqttCommand packet) throws Exception {
         ByteBuf byteBuf=packet.getByteBuf();
-        SubscribeRequest request = new SubscribeRequest();
+        SubscribeCommand request = new SubscribeCommand();
         request.setPacketId(byteBuf.readUnsignedShort());
         List<String> topics= Lists.newArrayListWithExpectedSize(5);
         List<SubscribeQos> qoss=Lists.newArrayListWithExpectedSize(5);
@@ -51,7 +51,7 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeRequest> {
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, SubscribeRequest subscribeRequest) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, SubscribeCommand subscribeRequest) throws Exception {
         boolean saveSuccess=topicDao.saveOrSubscribe(subscribeRequest.getTopics(),ctx.getClientId(),subscribeRequest.getQos());
         ServerTopics.subscribe(subscribeRequest.getTopics(),ctx.channel());
         //response bytes

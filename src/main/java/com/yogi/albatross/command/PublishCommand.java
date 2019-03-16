@@ -1,11 +1,11 @@
-package com.yogi.albatross.request;
+package com.yogi.albatross.command;
 
 import com.yogi.albatross.constants.common.PublishQos;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Objects;
 
-public class PublishRequest extends BaseRequest{
+public class PublishCommand extends BaseCommand {
     private int dup;
     private PublishQos qos;
     private int retain;

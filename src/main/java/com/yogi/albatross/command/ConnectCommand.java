@@ -1,9 +1,9 @@
-package com.yogi.albatross.request;
+package com.yogi.albatross.command;
 
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.WillQos;
 
-public class ConnectRequest  extends BaseRequest{
+public class ConnectCommand extends BaseCommand {
     //flags
     private boolean clearSession;//是否清除session
     private int willFlag;//是否有遗嘱
@@ -128,7 +128,7 @@ public class ConnectRequest  extends BaseRequest{
 
     @Override
     public String toString() {
-        return "ConnectRequest{" +
+        return "ConnectCommand{" +
                 "clearSession=" + clearSession +
                 ", willFlag=" + willFlag +
                 ", willQos=" + willQos +

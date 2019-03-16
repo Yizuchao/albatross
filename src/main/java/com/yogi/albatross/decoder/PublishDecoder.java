@@ -13,7 +13,7 @@ import com.yogi.albatross.db.DaoManager;
 import com.yogi.albatross.db.common.Status;
 import com.yogi.albatross.db.message.dao.MessageDao;
 import com.yogi.albatross.db.message.entity.Message;
-import com.yogi.albatross.request.PublishRequest;
+import com.yogi.albatross.command.PublishCommand;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.ThreadPoolUtils;
 import io.netty.buffer.ByteBuf;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Processor(targetType = FixedHeadType.PUBLISH)
-public class PublishDecoder extends DecoderAdapter<PublishRequest>{
+public class PublishDecoder extends DecoderAdapter<PublishCommand>{
     private MessageDao messageDao;
     public PublishDecoder() {
         messageDao=DaoManager.getDao(MessageDao.class);
@@ -32,8 +32,8 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
 
     private static final int PUBLISH_PACKAGE_FIX_LEN=4;//用于表示主题名长度的两个字节+用于表示报文标识符的长度
     @Override
-    protected PublishRequest process0(MqttCommand packet) throws Exception {
-        PublishRequest request=new PublishRequest();
+    protected PublishCommand process0(MqttCommand packet) throws Exception {
+        PublishCommand request=new PublishCommand();
         byte headByte=packet.getHeadByte();
         PublishQos qos=PublishQos.valueOf(headByte>>1 & 0x03);
         int dup=(headByte & 0x06)>>3;
@@ -58,7 +58,7 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, PublishRequest publishRequest) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, PublishCommand publishRequest) throws Exception {
         if(Objects.isNull(publishRequest)){
             return null;
         }
@@ -117,7 +117,7 @@ public class PublishDecoder extends DecoderAdapter<PublishRequest>{
             }
             for (MqttChannel mqttChannel:channels){
                 publishData.readerIndex(0);
-                mqttChannel.writeAndFlush(publishData,new PublishMsgChannelPromise(mqttChannel,messageId,ctx.getClientId(),content));
+                mqttChannel.write(publishData,new PublishMsgChannelPromise(mqttChannel,messageId,ctx.getClientId(),content));
             }
         });
     }

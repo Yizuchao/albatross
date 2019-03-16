@@ -15,7 +15,7 @@ import com.yogi.albatross.db.server.entity.Session;
 import com.yogi.albatross.db.topic.dao.TopicDao;
 import com.yogi.albatross.db.user.dao.UserDao;
 import com.yogi.albatross.db.user.dto.UserDto;
-import com.yogi.albatross.request.ConnectRequest;
+import com.yogi.albatross.command.ConnectCommand;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @Processor(targetType = FixedHeadType.CONNECT)
-public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
+public class ConnectDecoder extends DecoderAdapter<ConnectCommand> {
     private UserDao dao;
     private SessionDao serverDao;
     private TopicDao topicDao;
@@ -36,19 +36,19 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
     }
 
     @Override
-    public ConnectRequest process0(MqttCommand packet) throws Exception {
+    public ConnectCommand process0(MqttCommand packet) throws Exception {
         String protocolName=readUTF(packet.getByteBuf());
         int protocolLevel=packet.getByteBuf().readByte();
         if(!Constants.PTOTOCOL_NAME.contains(protocolName) || Constants.PROTOCOL_LEVEL<protocolLevel){
             throw  new Exception("protocol["+protocolName+"] or protocol level["+protocolLevel+"] not support");
         }
-        ConnectRequest connectRequest=payload(packet,keepLive(packet,connectFlags(packet,null)));
+        ConnectCommand connectRequest=payload(packet,keepLive(packet,connectFlags(packet,null)));
         return connectRequest;
     }
 
-    private ConnectRequest connectFlags(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
+    private ConnectCommand connectFlags(MqttCommand packet, ConnectCommand connectRequest) throws Exception{
         if(connectRequest==null){
-            connectRequest=new ConnectRequest();
+            connectRequest=new ConnectCommand();
         }
         //clean session
         byte flags=packet.getByteBuf().readByte();
@@ -105,7 +105,7 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
      * @return
      * @throws Exception
      */
-    private ConnectRequest keepLive(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
+    private ConnectCommand keepLive(MqttCommand packet, ConnectCommand connectRequest) throws Exception{
         short requestKeepLiveTime=packet.getByteBuf().readShort();
         connectRequest.setKeepLiveSecond(requestKeepLiveTime);
         //空闲链路检测
@@ -113,7 +113,7 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
         packet.getCtx().pipeline().addLast(new IdleStateHandler(keepLiveTime,keepLiveTime,keepLiveTime));
         return connectRequest;
     }
-    private  ConnectRequest payload(MqttCommand packet, ConnectRequest connectRequest) throws Exception{
+    private ConnectCommand payload(MqttCommand packet, ConnectCommand connectRequest) throws Exception{
         ByteBuf byteBuf=packet.getByteBuf();
         //client id
         connectRequest.setClientId(readUTF(byteBuf));
@@ -134,7 +134,7 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, ConnectRequest request) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, ConnectCommand request) throws Exception {
         if(request!=null){
             byte[] bs=new byte[4];
             bs[0]=0x20;
@@ -185,7 +185,7 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
      * @param ctx
      * @param request
      */
-    private Session createSession(AbstractMqttChannelHandlerContext ctx, ConnectRequest request, Long userId){
+    private Session createSession(AbstractMqttChannelHandlerContext ctx, ConnectCommand request, Long userId){
         MqttChannel channel=ctx.channel();
         ServerSessionProto.ServerSession.Builder builder = ServerSessionProto.ServerSession.newBuilder();
         builder.setKeepLiveSecond(request.getKeepLiveSecond()*1000);
@@ -212,7 +212,7 @@ public class ConnectDecoder extends DecoderAdapter<ConnectRequest> {
      * @param ctx
      * @param request
      */
-    private boolean recoverySession(AbstractMqttChannelHandlerContext ctx,ConnectRequest request){
+    private boolean recoverySession(AbstractMqttChannelHandlerContext ctx,ConnectCommand request){
         Session session =serverDao.getSessionFromDb(request.getClientId());
         if(session !=null){
             //保存遗嘱消息

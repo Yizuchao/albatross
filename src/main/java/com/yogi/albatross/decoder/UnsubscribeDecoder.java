@@ -5,16 +5,16 @@ import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
-import com.yogi.albatross.request.UnsubscribeRequest;
+import com.yogi.albatross.command.UnsubscribeCommand;
 
 import java.util.List;
 
 @Processor(targetType = FixedHeadType.UNSUBSCRIBE)
-public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeRequest>{
+public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeCommand>{
 
     @Override
-    protected UnsubscribeRequest process0(MqttCommand packet) throws Exception {
-        UnsubscribeRequest unsubscribeRequest=new UnsubscribeRequest();
+    protected UnsubscribeCommand process0(MqttCommand packet) throws Exception {
+        UnsubscribeCommand unsubscribeRequest=new UnsubscribeCommand();
         unsubscribeRequest.setPacketId(packet.getByteBuf().readUnsignedShort());
         List<String> topics= Lists.newArrayListWithExpectedSize(5);
         while (packet.getByteBuf().readableBytes()>0){
@@ -25,7 +25,7 @@ public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeRequest>{
     }
 
     @Override
-    public byte[] response(AbstractMqttChannelHandlerContext ctx, UnsubscribeRequest unsubscribeRequest) throws Exception {
+    public byte[] response(AbstractMqttChannelHandlerContext ctx, UnsubscribeCommand unsubscribeRequest) throws Exception {
         ctx.channel().setUnscribed(true);
         byte[] bytes=new byte[4];
         bytes[0]=(byte)0xb0;

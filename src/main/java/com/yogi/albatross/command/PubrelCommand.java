@@ -1,6 +1,6 @@
-package com.yogi.albatross.request;
+package com.yogi.albatross.command;
 
-public class PubrelRequest extends BaseRequest{
+public class PubrelCommand extends BaseCommand {
     private int packetId;
 
     public int getPacketId() {

@@ -28,8 +28,8 @@ public final class MqttChannel {
         return parent.id();
     }
 
-    public void writeAndFlush(Object o, ChannelPromise promise){
-        parent.writeAndFlush(o,promise);
+    public void write(Object o, ChannelPromise promise){
+        parent.write(o,promise);
     }
 
     public void writeAndFlush(Object o){

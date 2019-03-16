@@ -5,7 +5,7 @@ import com.yogi.albatross.Starter;
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
-import com.yogi.albatross.request.BaseRequest;
+import com.yogi.albatross.command.BaseCommand;
 import com.yogi.albatross.utils.ClassUtils;
 import com.yogi.albatross.utils.CollectionUtils;
 import com.yogi.albatross.utils.MQTTUtils;
@@ -43,7 +43,7 @@ public class MqttDispatchDecoder extends ByteToMessageDecoder {
                 if (decoder == null) {//不合法或者不支持的报文
                     mqttCommand.getCtx().close();
                 }
-                BaseRequest request = decoder.process(mqttCommand);
+                BaseCommand request = decoder.process(mqttCommand);
 
                 byte[] bytes = decoder.response(mqttCommand.getCtx(), request);
                 if (bytes != null && bytes.length > 0) {//立即返回响应报文

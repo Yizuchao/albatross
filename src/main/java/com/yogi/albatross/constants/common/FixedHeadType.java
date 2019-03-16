@@ -5,7 +5,7 @@ package com.yogi.albatross.constants.common;
  */
 public enum FixedHeadType {
     CONNECT("connect"),PUBLISH("publish"),PUBREL("pubrel"),SUBSCRIBE("subscribe"),
-    UNSUBSCRIBE("unsubscribe"),PINGREQ("pingreq")
+    UNSUBSCRIBE("unsubscribe"),PINGREQ("pingreq"),PUBACK("puback")
     ;
     private String desc;
 
@@ -35,6 +35,9 @@ public enum FixedHeadType {
         }
         if(code==(byte)0xc0){
             return PINGREQ;
+        }
+        if(code==(byte)0x40){
+            return PUBACK;
         }
         return null;
     }

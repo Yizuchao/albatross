@@ -1,17 +1,14 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.constants.common.MqttCommand;
-import com.yogi.albatross.db.server.entity.Session;
-import com.yogi.albatross.request.BaseRequest;
+import com.yogi.albatross.command.BaseCommand;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class DecoderAdapter<T extends BaseRequest> implements IDecoder<T> {
+public abstract class DecoderAdapter<T extends BaseCommand> implements IDecoder<T> {
     protected final Logger logger=LoggerFactory.getLogger(this.getClass());
 
     @Override
