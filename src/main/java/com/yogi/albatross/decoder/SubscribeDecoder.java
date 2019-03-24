@@ -2,8 +2,8 @@ package com.yogi.albatross.decoder;
 
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.common.server.ServerTopics;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.server.TopicTree;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.constants.common.SubscribeQos;
@@ -53,7 +53,7 @@ public class SubscribeDecoder extends DecoderAdapter<SubscribeCommand> {
     @Override
     public byte[] response(AbstractMqttChannelHandlerContext ctx, SubscribeCommand subscribeRequest) throws Exception {
         boolean saveSuccess=topicDao.saveOrSubscribe(subscribeRequest.getTopics(),ctx.getClientId(),subscribeRequest.getQos());
-        ServerTopics.subscribe(subscribeRequest.getTopics(),ctx.channel());
+        TopicTree.subscribe(subscribeRequest.getTopics(),ctx.channel());
         //response bytes
         int topicsSize=subscribeRequest.getTopics().size();
         int variableHeaderLen=topicsSize+2;//话题长度+packetId长度

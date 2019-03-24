@@ -1,8 +1,8 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.common.base.MqttChannel;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.MqttChannel;
 import com.yogi.albatross.common.server.ServerSessionProto;
 import com.yogi.albatross.constants.ack.ConnAck;
 import com.yogi.albatross.constants.common.Constants;

@@ -1,4 +1,4 @@
-package com.yogi.albatross.common.base;
+package com.yogi.albatross.common.mqtt;
 
 import com.yogi.albatross.constants.common.Constants;
 import com.yogi.albatross.db.DaoManager;
@@ -33,7 +33,7 @@ public class PublishMsgChannelPromise extends DefaultChannelPromise {
                 }else {
                     logger.error(future.cause().getMessage(),future.cause());
                     ThreadPoolUtils.deplayExcute(()->{
-                        toChannel.writeAndFlush(PooledByteBufAllocator.DEFAULT.directBuffer(messageContent.length).writeBytes(messageContent),
+                        toChannel.write(PooledByteBufAllocator.DEFAULT.directBuffer(messageContent.length).writeBytes(messageContent),
                                 new PublishMsgChannelPromise(toChannel,messageId,cliendId,messageContent,retryCount+1));
                     },retryCount*Constants.RETRY_BASE);
                 }

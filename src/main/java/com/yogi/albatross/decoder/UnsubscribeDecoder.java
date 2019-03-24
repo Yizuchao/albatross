@@ -2,7 +2,7 @@ package com.yogi.albatross.decoder;
 
 import com.google.common.collect.Lists;
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.command.UnsubscribeCommand;
@@ -26,7 +26,7 @@ public class UnsubscribeDecoder extends DecoderAdapter<UnsubscribeCommand>{
 
     @Override
     public byte[] response(AbstractMqttChannelHandlerContext ctx, UnsubscribeCommand unsubscribeRequest) throws Exception {
-        ctx.channel().setUnscribed(true);
+        ctx.channel().unsubscribe();
         byte[] bytes=new byte[4];
         bytes[0]=(byte)0xb0;
         bytes[1]=(byte)0x02;

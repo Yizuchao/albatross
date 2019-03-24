@@ -1,4 +1,4 @@
-package com.yogi.albatross.common.base;
+package com.yogi.albatross.common.mqtt;
 
 
 import com.yogi.albatross.db.DaoManager;

@@ -1,6 +1,6 @@
 package com.yogi.albatross.common.server;
 
-import com.yogi.albatross.common.base.MqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.MqttChannelHandlerContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;

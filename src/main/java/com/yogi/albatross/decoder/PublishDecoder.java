@@ -1,11 +1,12 @@
 package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.common.base.MqttChannel;
-import com.yogi.albatross.common.base.PublishMsgChannelPromise;
-import com.yogi.albatross.common.base.PublishResponseChannelPromise;
-import com.yogi.albatross.common.server.ServerTopics;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.MqttChannel;
+import com.yogi.albatross.common.mqtt.PublishMsgChannelPromise;
+import com.yogi.albatross.common.mqtt.PublishResponseChannelPromise;
+import com.yogi.albatross.common.server.Consumer;
+import com.yogi.albatross.common.server.TopicTree;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
 import com.yogi.albatross.constants.common.PublishQos;
@@ -107,17 +108,17 @@ public class PublishDecoder extends DecoderAdapter<PublishCommand>{
             byte[] content=publishData.array();
             Long messageId = persistenceAndResponse(content, ctx, response);
 
-            List<MqttChannel> channels = ServerTopics.searchSubscriber(topicOrQueueName);
-            if(CollectionUtils.isEmpty(channels)){
+            List<Consumer> consumers = TopicTree.searchSubscriber(topicOrQueueName);
+            if(CollectionUtils.isEmpty(consumers)){
                 return;
             }
-            int size=channels.size();
+            int size=consumers.size();
             if(size>1){
                 publishData.retain(size-1);
             }
-            for (MqttChannel mqttChannel:channels){
+            for (Consumer consumer:consumers){
                 publishData.readerIndex(0);
-                mqttChannel.write(publishData,new PublishMsgChannelPromise(mqttChannel,messageId,ctx.getClientId(),content));
+                consumer.write(publishData,new PublishMsgChannelPromise(consumer.mqttChannel(),messageId,ctx.getClientId(),content));
             }
         });
     }

@@ -1,7 +1,7 @@
 package com.yogi.albatross.constants.common;
 
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
-import com.yogi.albatross.common.base.MqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.MqttChannelHandlerContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

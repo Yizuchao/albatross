@@ -1,4 +1,4 @@
-package com.yogi.albatross.common.base;
+package com.yogi.albatross.common.mqtt;
 
 import io.netty.channel.DefaultChannelPromise;
 import org.slf4j.Logger;

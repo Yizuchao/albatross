@@ -1,4 +1,4 @@
-package com.yogi.albatross.common.base;
+package com.yogi.albatross.common.mqtt;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;

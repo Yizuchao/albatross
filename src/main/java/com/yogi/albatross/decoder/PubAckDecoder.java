@@ -2,7 +2,7 @@ package com.yogi.albatross.decoder;
 
 import com.yogi.albatross.annotation.Processor;
 import com.yogi.albatross.command.PubAckCommand;
-import com.yogi.albatross.common.base.AbstractMqttChannelHandlerContext;
+import com.yogi.albatross.common.mqtt.AbstractMqttChannelHandlerContext;
 import com.yogi.albatross.constants.common.FixedHeadType;
 import com.yogi.albatross.constants.common.MqttCommand;
 

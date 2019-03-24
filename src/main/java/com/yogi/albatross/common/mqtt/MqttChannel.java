@@ -1,4 +1,4 @@
-package com.yogi.albatross.common.base;
+package com.yogi.albatross.common.mqtt;
 
 import com.yogi.albatross.db.server.entity.Session;
 import io.netty.channel.Channel;
@@ -7,14 +7,12 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
-import java.util.Objects;
-
 /**
  *
  */
 public final class MqttChannel {
     private Channel parent;
-    private volatile  boolean unscribed;
+    private volatile boolean unsubscribe;
 
     public MqttChannel(Channel parent) {
         this.parent = parent;
@@ -24,35 +22,30 @@ public final class MqttChannel {
         Attribute<Session> attr = parent.attr(AttributeKey.valueOf(clientId()));
         return attr.get();
     }
-    public ChannelId channelId(){
+
+    public ChannelId channelId() {
         return parent.id();
     }
 
-    public void write(Object o, ChannelPromise promise){
-        parent.write(o,promise);
+    public void write(Object o, ChannelPromise promise) {
+        parent.write(o, promise);
     }
 
-    public void writeAndFlush(Object o){
-        parent.writeAndFlush(o);
-    }
-
-    public String clientId(){
+    public String clientId() {
         return getSession().getServerSession().getClientId();
     }
 
-    public <T> Attribute<T> attr(AttributeKey<T> key){
+    public <T> Attribute<T> attr(AttributeKey<T> key) {
         return parent.attr(key);
     }
 
-    protected Channel channel(){
+    public Channel channel() {
         return parent;
     }
-
-    public void setUnscribed(boolean unscribed) {
-        this.unscribed = unscribed;
+    public void unsubscribe(){
+        unsubscribe=false;
     }
-
-    public boolean isUnscribed() {
-        return unscribed;
+    public boolean isSubscribe(){
+        return !unsubscribe;
     }
 }

@@ -1,11 +1,9 @@
 package com.yogi.albatross.common.server;
 
 import com.google.common.collect.Lists;
-import com.yogi.albatross.common.base.MqttChannel;
+import com.yogi.albatross.common.mqtt.MqttChannel;
 import com.yogi.albatross.utils.CollectionUtils;
-import org.apache.commons.lang3.CharUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -13,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * 主题详细匹配规则[4.7.1]：https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/04-OperationalBehavior.html
  */
-public class ServerTopics {
+public class TopicTree {
     private static final char PATH_SEPARATOR='/';
     private static final char SINGLE_LEVEL='+';
     private static final char MULTI_LEVEL='#';
@@ -41,13 +39,13 @@ public class ServerTopics {
      * @param publishTopic 此时topic不能包含除了"/"的其它特殊字符
      * @return
      */
-    public static List<MqttChannel> searchSubscriber(String publishTopic) {
+    public static List<Consumer> searchSubscriber(String publishTopic) {
         if (Objects.isNull(publishTopic)) {
             return null;
         }
-        List<MqttChannel> channels = trie.searchChannels(publishTopic);
+        List<Consumer> channels = trie.searchChannels(publishTopic);
         if(!CollectionUtils.isEmpty(channels)){
-            return channels.stream().filter(mqttChannel -> !mqttChannel.isUnscribed()).collect(Collectors.toList());
+            return channels.stream().filter(mqttChannel -> mqttChannel.isSubscribe()).collect(Collectors.toList());
         }
         return channels;
     }
@@ -59,6 +57,7 @@ public class ServerTopics {
             }
         }
     }
+
 
     private static class TopicTrie {
         private final Node[] roots = new Node[67];
@@ -101,13 +100,13 @@ public class ServerTopics {
                 return false;
             }
             if (cs.length == 1) {
-                firstNode.addChannel(mqttChannel);
+                firstNode.addConsumer(mqttChannel);
             }
             Node preNode = firstNode;
             for (int i = 1; i < cs.length; i++) {
                 preNode = preNode.addNextIfNotExists(cs[i]);
                 if (i == cs.length - 1) {
-                    preNode.addChannel(mqttChannel);
+                    preNode.addConsumer(mqttChannel);
                 }
             }
             return true;
@@ -128,11 +127,11 @@ public class ServerTopics {
         /**
          * '#'保存了订阅所有主题的channel
          */
-        private List<MqttChannel> getPound(){
-            return roots[getRootIndex(MULTI_LEVEL)].getChannels();
+        private List<Consumer> getPound(){
+            return roots[getRootIndex(MULTI_LEVEL)].getConsumers();
         }
 
-        public List<MqttChannel> searchChannels(String topic){
+        public List<Consumer> searchChannels(String topic){
             if(Objects.isNull(topic)){
                 return null;
             }
@@ -142,11 +141,11 @@ public class ServerTopics {
                 return null;
             }
 
-            List<MqttChannel> channels=getPound();
+            List<Consumer> channels=getPound();
             channels=Objects.isNull(channels)?Lists.newArrayList():channels;
             Node rootNode=roots[rootIndex];
             if(cs.length==1){
-                CollectionUtils.addAll(channels,rootNode.getChannels());
+                CollectionUtils.addAll(channels,rootNode.getConsumers());
                 CollectionUtils.addAll(channels,getSeparatorPound(rootNode));
                 return channels;
             }
@@ -162,48 +161,48 @@ public class ServerTopics {
             CollectionUtils.addAll(channels,searchChannels(rootNode.getNext(cs[1]),cs,1));
             return channels;
         }
-        private List<MqttChannel> searchChannels(Node startNode,char[] topicArr,int start){
+        private List<Consumer> searchChannels(Node startNode,char[] topicArr,int start){
             if(Objects.isNull(startNode) || start>=topicArr.length){
                 return null;
             }
-            List<MqttChannel> channels=Lists.newArrayList();
+            List<Consumer> consumers=Lists.newArrayList();
             Node preSimgleLevelMatchNode=null;
             for (int i = start; i < topicArr.length; i++) {
                 if(topicArr[i]==PATH_SEPARATOR){
                     if(Objects.nonNull(preSimgleLevelMatchNode)){
                         if(i==topicArr.length-1){
-                            CollectionUtils.addAll(channels,preSimgleLevelMatchNode.getNextChannel(PATH_SEPARATOR));
+                            CollectionUtils.addAll(consumers,preSimgleLevelMatchNode.getNextConsumer(PATH_SEPARATOR));
                         }else {
-                            CollectionUtils.addAll(channels,searchChannels(preSimgleLevelMatchNode.skipToNextLevelStart(topicArr[i+1]),topicArr,i+1));
+                            CollectionUtils.addAll(consumers,searchChannels(preSimgleLevelMatchNode.skipToNextLevelStart(topicArr[i+1]),topicArr,i+1));
                         }
                     }
                     if(Objects.nonNull(startNode)){
-                        CollectionUtils.addAll(channels,startNode.getNextChannel(MULTI_LEVEL));
+                        CollectionUtils.addAll(consumers,startNode.getNextConsumer(MULTI_LEVEL));
                         preSimgleLevelMatchNode=startNode.getNext(SINGLE_LEVEL);
                     }
                 }
                 if(i==topicArr.length-1){
                     if(Objects.nonNull(startNode)){
-                        CollectionUtils.addAll(channels,startNode.getChannels());
-                        CollectionUtils.addAll(channels,getSeparatorPound(startNode));
+                        CollectionUtils.addAll(consumers,startNode.getConsumers());
+                        CollectionUtils.addAll(consumers,getSeparatorPound(startNode));
                         if(topicArr[i]==PATH_SEPARATOR){
-                            CollectionUtils.addAll(channels,startNode.getNextChannel(SINGLE_LEVEL));
+                            CollectionUtils.addAll(consumers,startNode.getNextConsumer(SINGLE_LEVEL));
                         }
                     }
                     if(Objects.nonNull(preSimgleLevelMatchNode)){
-                        CollectionUtils.addAll(channels,preSimgleLevelMatchNode.getChannels());
+                        CollectionUtils.addAll(consumers,preSimgleLevelMatchNode.getConsumers());
                     }
-                    return channels;
+                    return consumers;
                 }
                 if(Objects.nonNull(startNode)){
                     startNode=startNode.getNext(topicArr[i+1]);
                 } else if(Objects.isNull(preSimgleLevelMatchNode)){
-                    return channels;
+                    return consumers;
                 }
             }
-            return channels;
+            return consumers;
         }
-        private List<MqttChannel> getSeparatorPound(Node node){
+        private List<Consumer> getSeparatorPound(Node node){
             Node separatorNode=node.getNext(PATH_SEPARATOR);
             if(Objects.isNull(separatorNode)){
                 return null;
@@ -212,7 +211,7 @@ public class ServerTopics {
             if(Objects.isNull(poundNode)){
                 return null;
             }
-            return poundNode.getChannels();
+            return poundNode.getConsumers();
         }
         private int getRootIndex(char c) {
             if (c > 96 && c < 122) {
@@ -244,24 +243,29 @@ public class ServerTopics {
 
         private class Node {
             private char c;
-            private List<MqttChannel> channels;
+            private volatile ServerTopic serverTopic;
             private List<Node> nexts;
 
             public Node(char c) {
                 this.c = c;
             }
 
-            public void addChannel(MqttChannel channel) {
-                if (CollectionUtils.isEmpty(channels)) {
-                    channels = new ArrayList<>();
+            public void addConsumer(MqttChannel channel) {
+                if(Objects.isNull(serverTopic)){
+                    synchronized (serverTopic){
+                        if(Objects.isNull(serverTopic)){
+                            serverTopic = new ServerTopic();
+                        }
+                    }
                 }
-                channels.add(channel);
+                serverTopic.addConsumer(channel);
             }
-            public List<MqttChannel> getChannels(){
-                if(Objects.nonNull(channels)){
+            public List<Consumer> getConsumers(){
+                if(Objects.nonNull(serverTopic)){
                     System.out.println("this node char:"+this.c);
+                    serverTopic.consumers();
                 }
-                return channels;
+                return null;
             }
             public Node skipToNextLevelStart(char nextLevelStartChar){
                 Node levelNode = this.getNext(PATH_SEPARATOR);
@@ -271,18 +275,15 @@ public class ServerTopics {
                 return null;
             }
 
-            public List<MqttChannel> getNextChannel(char c){
+            public List<Consumer> getNextConsumer(char c){
                 if(Objects.isNull(nexts)){
                     return null;
                 }
                 Node next = getNext(c);
                 if(Objects.nonNull(next)){
-                    return next.getChannels();
+                    return next.getConsumers();
                 }
                 return null;
-            }
-            public char getChar(){
-                return c;
             }
 
             /**
@@ -321,12 +322,12 @@ public class ServerTopics {
     }
 
     public static void main(String[] args) {
-        ServerTopics.subscribe("#",new MqttChannel(null));
-        ServerTopics.subscribe("+/bbbb/+",new MqttChannel(null));
-        ServerTopics.subscribe("bbbb/#",new MqttChannel(null));
-        ServerTopics.subscribe("ccccc/+",new MqttChannel(null));
-        ServerTopics.subscribe("ddddd",new MqttChannel(null));
-        ServerTopics.subscribe("aaaa/#",new MqttChannel(null));
-        ServerTopics.searchSubscriber("aaaa/bbbb/vvvvv");
+        TopicTree.subscribe("#",new MqttChannel(null));
+        TopicTree.subscribe("+/bbbb/+",new MqttChannel(null));
+        TopicTree.subscribe("bbbb/#",new MqttChannel(null));
+        TopicTree.subscribe("ccccc/+",new MqttChannel(null));
+        TopicTree.subscribe("ddddd",new MqttChannel(null));
+        TopicTree.subscribe("aaaa/#",new MqttChannel(null));
+        TopicTree.searchSubscriber("aaaa/bbbb/vvvvv");
     }
 }
